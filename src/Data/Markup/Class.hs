@@ -6,20 +6,29 @@ module Data.Markup.Class where
 
 import Data.Markup.Types
 
+import Lucid
+import Data.Monoid
+import qualified Data.Text as T
 
+-- | Overload assets and their markup library, over some deployment
 class Markup markup t (m :: * -> *) where
   renderMarkup :: t -> m markup
 
-
+-- | Assets that implement this (with their representing markup library) can be 
+-- rendered as Inline
 class InlineMarkup markup t input where
   renderInline :: t -> input -> markup
 
+-- | Assets that implement this can be rendered as /hosted/.
 class HostedMarkup markup t input where
   renderHosted :: t -> input -> markup
 
+-- | Assets that implement this can be rendered as /local/.
 class LocalMarkup markup t input where
   renderLocal :: t -> input -> markup
 
+-- TODO: wrap all three deployment systems in one class, and remove the need to 
+-- worry about it post-`renderMarkup`.
 
 instance ( InlineMarkup markup t input
          , Monad m ) =>

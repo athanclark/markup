@@ -46,9 +46,7 @@ Here is the same example, going relative instead:
 ```haskell
 image' = renderMarkup Image :: (Monad m, Url UrlString AbsoluteUrl) => LocalMarkupT UrlString m (HtmlT AbsoluteUrl ())
 
-image = runLocalMarkupT image' $ "foo.png" <?> ("key","bar")
-
-λ> (runUrlReader $ renderTextT $ runIdentity $ runLocalMarkupT image' $ 
+λ> (runUrlReader $ renderTextT $ runIdentity $ runLocalMarkupT image' $
      "foo.png" <?> ("key","bar")
    ) "example.com"
 
