@@ -14,8 +14,16 @@ Library
   HS-Source-Dirs:       src
   GHC-Options:          -Wall
   Exposed-Modules:      Data.Markup
+                        Data.Markup.Types
   Other-Modules:        Data.Markup.Internal
   Build-Depends:        base >= 4 && < 5
+                      , transformers
+                      , mtl
+                      , lucid >= 2.5
+                      , blaze-html
+                      , blaze-markup
+                      , text
+                      , urlpath
 
 Test-Suite spec
   Type:                 exitcode-stdio-1.0

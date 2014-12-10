@@ -1,3 +1,12 @@
-module Data.Markup where
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE FlexibleInstances #-}
 
-import Data.Markup.Internal
+module Data.Markup
+    ( module Data.Markup.Types
+    , module Data.Markup.Class
+    , module Data.Markup.Library ) where
+
+import Data.Markup.Types
+import Data.Markup.Class
+import Data.Markup.Library
