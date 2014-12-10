@@ -50,7 +50,8 @@ Library
   GHC-Options:          -Wall
   Exposed-Modules:      Data.Markup
                         Data.Markup.Types
-  Other-Modules:        Data.Markup.Internal
+                        Data.Markup.Class
+                        Data.Markup.Library
   Build-Depends:        base >= 4 && < 5
                       , transformers
                       , mtl
