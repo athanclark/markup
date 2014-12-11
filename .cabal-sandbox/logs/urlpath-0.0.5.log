@@ -1,0 +1,101 @@
+Configuring urlpath-0.0.5...
+Building urlpath-0.0.5...
+Preprocessing library urlpath-0.0.5...
+[1 of 2] Compiling UrlPath.Types    ( src/UrlPath/Types.hs, dist/dist-sandbox-eb3427e6/build/UrlPath/Types.o )
+
+src/UrlPath/Types.hs:124:10: Warning:
+    No explicit implementation for
+      ‘pure’
+    In the instance declaration for ‘Applicative (RelativeUrlT f)’
+
+src/UrlPath/Types.hs:136:10: Warning:
+    No explicit implementation for
+      ‘local’
+    In the instance declaration for
+      ‘MonadReader T.Text (RelativeUrlT m)’
+
+src/UrlPath/Types.hs:159:10: Warning:
+    No explicit implementation for
+      ‘pure’
+    In the instance declaration for ‘Applicative RelativeUrl’
+
+src/UrlPath/Types.hs:168:10: Warning:
+    No explicit implementation for
+      ‘local’
+    In the instance declaration for ‘MonadReader T.Text RelativeUrl’
+
+src/UrlPath/Types.hs:177:10: Warning:
+    No explicit implementation for
+      ‘pure’
+    In the instance declaration for ‘Applicative (GroundedUrlT f)’
+
+src/UrlPath/Types.hs:189:10: Warning:
+    No explicit implementation for
+      ‘local’
+    In the instance declaration for
+      ‘MonadReader T.Text (GroundedUrlT m)’
+
+src/UrlPath/Types.hs:197:10: Warning:
+    No explicit implementation for
+      ‘pure’
+    In the instance declaration for ‘Applicative GroundedUrl’
+
+src/UrlPath/Types.hs:206:10: Warning:
+    No explicit implementation for
+      ‘local’
+    In the instance declaration for ‘MonadReader T.Text GroundedUrl’
+
+src/UrlPath/Types.hs:215:10: Warning:
+    No explicit implementation for
+      ‘pure’
+    In the instance declaration for ‘Applicative (AbsoluteUrlT f)’
+
+src/UrlPath/Types.hs:227:10: Warning:
+    No explicit implementation for
+      ‘local’
+    In the instance declaration for
+      ‘MonadReader T.Text (AbsoluteUrlT m)’
+
+src/UrlPath/Types.hs:235:10: Warning:
+    No explicit implementation for
+      ‘pure’
+    In the instance declaration for ‘Applicative AbsoluteUrl’
+
+src/UrlPath/Types.hs:244:10: Warning:
+    No explicit implementation for
+      ‘local’
+    In the instance declaration for ‘MonadReader T.Text AbsoluteUrl’
+[2 of 2] Compiling UrlPath          ( src/UrlPath.hs, dist/dist-sandbox-eb3427e6/build/UrlPath.o )
+
+src/UrlPath.hs:19:1: Warning:
+    The import of ‘Control.Monad.Trans’ is redundant
+      except perhaps to import instances from ‘Control.Monad.Trans’
+    To import instances alone, use: import Control.Monad.Trans()
+
+src/UrlPath.hs:22:1: Warning:
+    The import of ‘Data.Monoid’ is redundant
+      except perhaps to import instances from ‘Data.Monoid’
+    To import instances alone, use: import Data.Monoid()
+
+src/UrlPath.hs:23:1: Warning:
+    The import of ‘Control.Applicative’ is redundant
+      except perhaps to import instances from ‘Control.Applicative’
+    To import instances alone, use: import Control.Applicative()
+
+src/UrlPath.hs:24:1: Warning:
+    The import of ‘Control.Monad’ is redundant
+      except perhaps to import instances from ‘Control.Monad’
+    To import instances alone, use: import Control.Monad()
+
+src/UrlPath.hs:35:10: Warning:
+    No explicit implementation for
+      ‘local’
+    In the instance declaration for ‘MonadReader T.Text Identity’
+
+src/UrlPath.hs:35:10: Warning:
+    Orphan instance: instance MonadReader T.Text Identity
+In-place registering urlpath-0.0.5...
+Creating package registration file: /tmp/pkgConf-urlpath-0.06884.5
+Installing library in
+/home/athan/dev/markup-0.0.1/.cabal-sandbox/lib/x86_64-linux-ghc-7.8.3/urlpath-0.0.5
+Registering urlpath-0.0.5...
