@@ -29,7 +29,8 @@ Description:
   .
   Here is the same example, going relative instead:
   .
-  > image = deploy Image $ "foo.png" <?> ("some","getparam") :: LocalMarkupM (HtmlT AbsoluteUrl ())
+  > image :: LocalMarkupM (HtmlT AbsoluteUrl ())
+  > image = deploy Image $ "foo.png" <?> ("some","getparam")
   >
   > λ> (runUrlReader $ renderTextT $ renderMarkup image $
   >    ) "example.com"
