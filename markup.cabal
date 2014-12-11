@@ -21,25 +21,20 @@ Description:
   .
   As an example, here is remotely hosted image:
   .
-  > image' = renderMarkup Image :: Monad m => HostedMarkupT m T.Text (Html ())
-  > 
-  > image = runHostedMarkupT image' "foo.png"
-  > 
-  > λ> renderText image
+  > image = deploy Image "foo.png" :: HostedMarkupM (Html ())
+  >
+  > λ> renderMarkup image
   > 
   > <img src="foo.png">
   .
   Here is the same example, going relative instead:
   .
-  > image' = renderMarkup Image :: (Monad m, Url UrlString AbsoluteUrl) => LocalMarkupT UrlString m (HtmlT AbsoluteUrl ())
+  > image = deploy Image $ "foo.png" <?> ("some","getparam") :: LocalMarkupM (HtmlT AbsoluteUrl ())
   >
-  > λ> (runUrlReader $ renderTextT $ runIdentity $ runLocalMarkupT image' $
-  >      "foo.png" <?> ("key","bar")
+  > λ> (runUrlReader $ renderTextT $ renderMarkup image $
   >    ) "example.com"
   >
-  > "<img src=\"example.com/foo.png?key=bar\">"
-  .
-  Right now this library isn't so great, hopefully it will get better soon :)
+  > "<img src=\"example.com/foo.png?some=getparam\">"
 
 Cabal-Version:          >= 1.10
 Build-Type:             Simple
@@ -59,7 +54,7 @@ Library
                       , blaze-html
                       , blaze-markup
                       , text
-                      , urlpath
+                      , urlpath >= 0.0.5
 
 Test-Suite spec
   Type:                 exitcode-stdio-1.0
