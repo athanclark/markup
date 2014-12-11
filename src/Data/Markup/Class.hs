@@ -19,6 +19,10 @@ import Data.Functor.Identity
 class Markup markup t (m :: * -> *) where
   renderMarkup :: t -> m markup
 
+
+-- I split the following classes because the same symbol and markup types may 
+-- have different input schemas per deployment scheme.
+--
 -- | Assets that implement this (with their representing markup library) can be 
 -- rendered as Inline
 class InlineMarkup markup t input where

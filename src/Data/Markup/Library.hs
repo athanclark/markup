@@ -32,6 +32,8 @@ data JavaScript = JavaScript deriving (Show, Eq)
 
 -- Lucid instances
 
+-- Images only have local and hosted instances - inline can only be done with 
+-- js... TODO?
 instance Monad m =>
            HostedMarkup (LBase.HtmlT m ()) Image T.Text where
   renderHosted Image t =
@@ -45,6 +47,7 @@ instance ( Monad m
     L.img_ [L.src_ url]
 
 
+-- JS instances
 instance Monad m =>
            InlineMarkup (LBase.HtmlT m ()) JavaScript T.Text where
   renderInline JavaScript t =
