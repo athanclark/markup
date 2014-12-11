@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE FlexibleInstances #-}
@@ -12,6 +13,8 @@ module Data.Markup where
 import Lucid
 import Lucid.Base
 import UrlPath
+
+import qualified Data.Text as T
 
 import Data.Markup.Types
 import Data.Markup.Class
@@ -39,3 +42,9 @@ instance Applicative Inline where
 instance Monad Inline where
   return = Inline
   x >>= f = f $ runInline x
+
+
+instance Url input m => Deploy JavaScript input (HtmlT m ()) Inline where
+  deploy JavaScript t = return $ do
+    url <- lift $ renderUrl t
+    script_ [src_ url] ("" :: T.Text)
