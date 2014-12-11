@@ -85,3 +85,19 @@ instance ( LocalMarkup markup t input
              Markup markup t (LocalMarkupT input m) where
   renderMarkup t = LocalMarkupT $ \i ->
     return $ renderLocal t i
+
+
+instance ( InlineMarkup markup symbol input ) =>
+             Markup markup symbol (InlineMarkupM input) where
+  renderMarkup sym = InlineMarkupM $ \i ->
+    renderInline sym i
+
+instance ( HostedMarkup markup symbol input ) =>
+             Markup markup symbol (HostedMarkupM input) where
+  renderMarkup sym = HostedMarkupM $ \i ->
+    renderHosted sym i
+
+instance ( LocalMarkup markup symbol input ) =>
+             Markup markup symbol (LocalMarkupM input) where
+  renderMarkup sym = LocalMarkupM $ \i ->
+    renderLocal sym i

@@ -14,12 +14,12 @@ catchIO = Exception.catch
 
 
 version :: Version
-version = Version {versionBranch = [0,0,1], versionTags = []}
+version = Version {versionBranch = [0,0,2], versionTags = []}
 bindir, libdir, datadir, libexecdir, sysconfdir :: FilePath
 
 bindir     = "/home/athan/dev/markup-0.0.1/.cabal-sandbox/bin"
-libdir     = "/home/athan/dev/markup-0.0.1/.cabal-sandbox/lib/x86_64-linux-ghc-7.8.3/markup-0.0.1"
-datadir    = "/home/athan/dev/markup-0.0.1/.cabal-sandbox/share/x86_64-linux-ghc-7.8.3/markup-0.0.1"
+libdir     = "/home/athan/dev/markup-0.0.1/.cabal-sandbox/lib/x86_64-linux-ghc-7.8.3/markup-0.0.2"
+datadir    = "/home/athan/dev/markup-0.0.1/.cabal-sandbox/share/x86_64-linux-ghc-7.8.3/markup-0.0.2"
 libexecdir = "/home/athan/dev/markup-0.0.1/.cabal-sandbox/libexec"
 sysconfdir = "/home/athan/dev/markup-0.0.1/.cabal-sandbox/etc"
 
