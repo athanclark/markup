@@ -5,6 +5,7 @@
 
 module Data.Markup.Types where
 
+import Data.Monoid
 import Control.Applicative
 import Control.Monad
 import Control.Monad.Trans
@@ -70,6 +71,16 @@ instance Monad InlineMarkupM where
   return = InlineMarkupM
   x >>= f = f $ runInlineMarkupM x
 
+instance Monoid w => Monoid (InlineMarkupM w) where
+  x `mappend` y = InlineMarkupM $
+    (runInlineMarkupM x) `mappend` (runInlineMarkupM y)
+
+instance Monad w => Monoid (InlineMarkupM (w a)) where
+  x `mappend` y = InlineMarkupM $ do
+    (runInlineMarkupM x)
+    (runInlineMarkupM y)
+
+
 newtype HostedMarkupM a = HostedMarkupM {runHostedMarkupM :: a}
   deriving (Functor)
 
@@ -80,6 +91,16 @@ instance Applicative HostedMarkupM where
 instance Monad HostedMarkupM where
   return = HostedMarkupM
   x >>= f = f $ runHostedMarkupM x
+
+instance Monoid w => Monoid (HostedMarkupM w) where
+  x `mappend` y = HostedMarkupM $
+    (runHostedMarkupM x) `mappend` (runHostedMarkupM y)
+
+instance Monad w => Monoid (HostedMarkupM (w a)) where
+  x `mappend` y = HostedMarkupM $ do
+    (runHostedMarkupM x)
+    (runHostedMarkupM y)
+
 
 newtype LocalMarkupM a = LocalMarkupM {runLocalMarkupM :: a}
   deriving (Functor)
@@ -92,4 +113,11 @@ instance Monad LocalMarkupM where
   return = LocalMarkupM
   x >>= f = f $ runLocalMarkupM x
 
+instance Monoid w => Monoid (LocalMarkupM w) where
+  x `mappend` y = LocalMarkupM $
+    (runLocalMarkupM x) `mappend` (runLocalMarkupM y)
 
+instance Monad w => Monoid (LocalMarkupM (w a)) where
+  x `mappend` y = LocalMarkupM $ do
+    (runLocalMarkupM x)
+    (runLocalMarkupM y)
