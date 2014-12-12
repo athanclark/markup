@@ -55,7 +55,7 @@ Library
                       , blaze-html
                       , blaze-markup
                       , text
-                      , urlpath >= 0.0.5
+                      , urlpath >= 0.0.6
 
 Test-Suite spec
   Type:                 exitcode-stdio-1.0
