@@ -1,5 +1,8 @@
 # markup
 
+> **WARNING**: This project is in it's infancy, please don't expect it to work. 
+> Thank you :)
+
 A generic interface to chunks of markup.
 
 In this library, we try to ambiguate _types_ of markup via data types, namely 
