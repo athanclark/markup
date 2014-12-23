@@ -19,7 +19,7 @@ import Data.Functor.Identity
 class Deploy symbol input markup (m :: * -> *) where
   deploy :: symbol -> input -> m markup
 
--- | Overload extraction of monad
+-- | Overload extraction of (co)monad
 class Monad m => Markup (m :: * -> *) where
   renderMarkup :: m a -> a
 

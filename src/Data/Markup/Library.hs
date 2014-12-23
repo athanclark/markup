@@ -46,10 +46,10 @@ instance Monad m =>
   deploy Image i = return $
     L.img_ [L.src_ i]
 
-instance Url input m =>
-           Deploy Image input (LBase.HtmlT m ()) LocalMarkupM where
+instance Url T.Text m =>
+           Deploy Image (UrlString T.Text) (LBase.HtmlT m ()) LocalMarkupM where
   deploy Image i = return $ do
-    url <- lift $ renderUrl i
+    url <- lift $ url i
     L.img_ [L.src_ url]
 
 instance ( Monad m
@@ -64,13 +64,12 @@ instance ( Monad m
   deploy Image i = return $
     L.img_ [L.src_ i]
 
-instance ( Url input m
+instance ( Url T.Text m
          , Monad m' ) =>
-             Deploy Image input (LBase.HtmlT m ()) (LocalMarkupT m') where
+             Deploy Image (UrlString T.Text) (LBase.HtmlT m ()) (LocalMarkupT m') where
   deploy Image i = return $ do
-    url <- lift $ renderUrl i
+    url <- lift $ url i
     L.img_ [L.src_ url]
-
 
 -- JS instances
 
@@ -89,10 +88,10 @@ instance Monad m =>
   deploy JavaScript i = return $
     L.script_ [L.src_ i] ("" :: T.Text)
 
-instance Url input m =>
-           Deploy JavaScript input (LBase.HtmlT m ()) LocalMarkupM where
+instance Url T.Text m =>
+           Deploy JavaScript (UrlString T.Text) (LBase.HtmlT m ()) LocalMarkupM where
   deploy JavaScript i = return $ do
-    url <- lift $ renderUrl i
+    url <- lift $ url i
     L.script_ [L.src_ url] ("" :: T.Text)
 
 instance ( Monad m
@@ -113,12 +112,12 @@ instance ( Monad m
   deploy JavaScript i = return $
     L.script_ [L.src_ i] ("" :: T.Text)
 
-instance ( Url input m
+instance ( Url T.Text m
          , Monad m' ) =>
-             Deploy JavaScript input (LBase.HtmlT m ()) (LocalMarkupT m') where
+             Deploy JavaScript (UrlString T.Text) (LBase.HtmlT m ()) (LocalMarkupT m') where
   deploy JavaScript i = return $ do
-    url <- lift $ renderUrl i
-    L.script_ [L.src_ url] ("" :: T.Text)
+    link <- lift $ url i
+    L.script_ [L.src_ link] ("" :: T.Text)
 
 
 -- Blaze-html instances
@@ -129,11 +128,17 @@ instance H.ToValue input =>
   deploy Image i = return $
     H.img H.! A.src (H.toValue i)
 
-instance Url input HI.MarkupM =>
-           Deploy Image input (HI.MarkupM ()) LocalMarkupM where
+instance Url T.Text HI.MarkupM =>
+           Deploy Image T.Text (HI.MarkupM ()) LocalMarkupM where
   deploy Image i = return $ do
-    url <- renderUrl i
-    H.img H.! A.src (H.toValue url)
+    link <- plainUrl i
+    H.img H.! A.src (H.toValue link)
+
+instance Url T.Text HI.MarkupM =>
+           Deploy Image (UrlString T.Text) (HI.MarkupM ()) LocalMarkupM where
+  deploy Image i = return $ do
+    link <- url i
+    H.img H.! A.src (H.toValue link)
 
 instance ( H.ToValue input
          , Monad m ) =>
@@ -141,12 +146,19 @@ instance ( H.ToValue input
   deploy Image i = return $
     H.img H.! A.src (H.toValue i)
 
-instance ( Url input HI.MarkupM
+instance ( Url T.Text HI.MarkupM
          , Monad m ) =>
-             Deploy Image input (HI.MarkupM ()) (LocalMarkupT m) where
+             Deploy Image T.Text (HI.MarkupM ()) (LocalMarkupT m) where
   deploy Image i = return $ do
-    url <- renderUrl i
-    H.img H.! A.src (H.toValue url)
+    link <- plainUrl i
+    H.img H.! A.src (H.toValue link)
+
+instance ( Url T.Text HI.MarkupM
+         , Monad m ) =>
+             Deploy Image (UrlString T.Text) (HI.MarkupM ()) (LocalMarkupT m) where
+  deploy Image i = return $ do
+    link <- url i
+    H.img H.! A.src (H.toValue link)
 
 
 
@@ -160,11 +172,17 @@ instance H.ToValue input =>
   deploy JavaScript i = return $
     (H.script H.! A.src (H.toValue i)) HI.Empty
 
-instance Url input HI.MarkupM =>
-           Deploy JavaScript input (HI.MarkupM ()) LocalMarkupM where
+instance Url T.Text HI.MarkupM =>
+           Deploy JavaScript T.Text (HI.MarkupM ()) LocalMarkupM where
   deploy JavaScript i = return $ do
-    url <- renderUrl i
-    (H.script H.! A.src (H.toValue url)) HI.Empty
+    link <- plainUrl i
+    (H.script H.! A.src (H.toValue link)) HI.Empty
+
+instance Url T.Text HI.MarkupM =>
+           Deploy JavaScript (UrlString T.Text) (HI.MarkupM ()) LocalMarkupM where
+  deploy JavaScript i = return $ do
+    link <- url i
+    (H.script H.! A.src (H.toValue link)) HI.Empty
 
 instance ( H.ToMarkup input
          , Monad m ) =>
@@ -178,9 +196,16 @@ instance ( H.ToValue input
   deploy JavaScript i = return $
     (H.script H.! A.src (H.toValue i)) HI.Empty
 
-instance ( Url input HI.MarkupM
+instance ( Url T.Text HI.MarkupM
          , Monad m ) =>
-             Deploy JavaScript input (HI.MarkupM ()) (LocalMarkupT m) where
+             Deploy JavaScript T.Text (HI.MarkupM ()) (LocalMarkupT m) where
   deploy JavaScript i = return $ do
-    url <- renderUrl i
-    (H.script H.! A.src (H.toValue url)) HI.Empty
+    link <- plainUrl i
+    (H.script H.! A.src (H.toValue link)) HI.Empty
+
+instance ( Url T.Text HI.MarkupM
+         , Monad m ) =>
+             Deploy JavaScript (UrlString T.Text) (HI.MarkupM ()) (LocalMarkupT m) where
+  deploy JavaScript i = return $ do
+    link <- url i
+    (H.script H.! A.src (H.toValue link)) HI.Empty
