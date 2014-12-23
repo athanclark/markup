@@ -1,5 +1,9 @@
+[![MIT License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](https://tldrlegal.com/license/mit-license)
+[![Hackage](http://img.shields.io/badge/hackage-0.0.3-brightgreen.svg)](https://hackage.haskell.org/package/markup)
 [![Stories in Ready](https://badge.waffle.io/athanclark/markup.png?label=ready&title=Ready)](https://waffle.io/athanclark/markup)
-# markup
+
+markup
+======
 
 > **WARNING**: This project is in it's infancy, please don't expect it to work. 
 > Thank you :)
