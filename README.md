@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/athanclark/markup.png?label=ready&title=Ready)](https://waffle.io/athanclark/markup)
 # markup
 
 > **WARNING**: This project is in it's infancy, please don't expect it to work. 
