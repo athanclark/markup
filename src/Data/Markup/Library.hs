@@ -24,16 +24,19 @@ import qualified Data.Text.Lazy as LT
 import Data.Monoid
 import Control.Monad.Trans
 
--- | Abstract data type of an "image" asset.
+-- | The Image symbol
 data Image = Image deriving (Show, Eq)
 
--- | Abstract data type of javascript.
+-- | The JavaScript symbol
 data JavaScript = JavaScript deriving (Show, Eq)
+
+-- | The Css symbol
+data Css = Css deriving (Show, Eq)
 
 
 -- Lucid instances
 
--- Images only have local and hosted instances - inline can only be done with 
+-- Images only have local and hosted instances - inline can only be done with
 -- js... TODO?
 
 instance Monad m =>
@@ -118,6 +121,66 @@ instance ( Url T.Text m
   deploy JavaScript i = return $ do
     link <- lift $ url i
     L.script_ [L.src_ link] ("" :: T.Text)
+
+-- Css instances
+
+instance Monad m =>
+  Deploy Css T.Text (LBase.HtmlT m ()) InlineMarkupM where
+    deploy Css i = return $
+      L.style_ [] i
+
+instance Monad m =>
+  Deploy Css LT.Text (LBase.HtmlT m ()) InlineMarkupM where
+    deploy Css i = return $
+      L.style_ [] i
+
+instance Monad m =>
+  Deploy Css T.Text (LBase.HtmlT m ()) HostedMarkupM where
+    deploy Css i = return $
+      L.link_ [ L.rel_ "stylesheet"
+              , L.type_ "text/css"
+              , L.href_ i
+              ]
+
+instance Url T.Text m =>
+  Deploy Css (UrlString T.Text) (LBase.HtmlT m ()) LocalMarkupM where
+    deploy Css i = return $ do
+      link <- lift $ url i
+      L.link_ [ L.rel_ "stylesheet"
+              , L.type_ "text/css"
+              , L.href_ link
+              ]
+
+instance ( Monad m
+         , Monad m' ) =>
+             Deploy Css T.Text (LBase.HtmlT m ()) (InlineMarkupT m') where
+               deploy Css i = return $
+                 L.style_ [] i
+
+instance ( Monad m
+         , Monad m' ) =>
+             Deploy Css LT.Text (LBase.HtmlT m ()) (InlineMarkupT m') where
+               deploy Css i = return $
+                 L.style_ [] i
+
+instance ( Monad m
+         , Monad m' ) =>
+             Deploy Css T.Text (LBase.HtmlT m ()) (HostedMarkupT m') where
+               deploy Css i = return $
+                 L.link_ [ L.rel_ "stylesheet"
+                         , L.type_ "text/css"
+                         , L.href_ i
+                         ]
+
+instance ( Url T.Text m
+         , Monad m' ) =>
+             Deploy Css (UrlString T.Text) (LBase.HtmlT m ()) (LocalMarkupT m') where
+               deploy Css i = return $ do
+                 link <- lift $ url i
+                 L.link_ [ L.rel_ "stylesheet"
+                         , L.type_ "text/css"
+                         , L.href_ link
+                       ]
 
 
 -- Blaze-html instances
@@ -209,3 +272,65 @@ instance ( Url T.Text HI.MarkupM
   deploy JavaScript i = return $ do
     link <- url i
     (H.script H.! A.src (H.toValue link)) HI.Empty
+
+
+
+instance H.ToMarkup input =>
+           Deploy Css input (HI.MarkupM ()) InlineMarkupM where
+  deploy Css i = return $
+    H.style (H.toMarkup i)
+
+instance H.ToValue input =>
+           Deploy Css input (HI.MarkupM ()) HostedMarkupM where
+  deploy Css i = return $
+    H.link H.! A.rel "stylesheet"
+            H.! A.type_ "text/css"
+            H.! A.href (H.toValue i)
+
+instance Url T.Text HI.MarkupM =>
+           Deploy Css T.Text (HI.MarkupM ()) LocalMarkupM where
+  deploy Css i = return $ do
+    link <- plainUrl i
+    H.link H.! A.rel "stylesheet"
+            H.! A.type_ "text/css"
+            H.! A.href (H.toValue link)
+
+instance Url T.Text HI.MarkupM =>
+           Deploy Css (UrlString T.Text) (HI.MarkupM ()) LocalMarkupM where
+  deploy Css i = return $ do
+    link <- url i
+    H.link H.! A.rel "stylesheet"
+            H.! A.type_ "text/css"
+            H.! A.href (H.toValue link)
+
+instance ( H.ToMarkup input
+         , Monad m ) =>
+             Deploy Css input (HI.MarkupM ()) (InlineMarkupT m) where
+  deploy Css i = return $
+    H.style (H.toMarkup i)
+
+instance ( H.ToValue input
+         , Monad m ) =>
+             Deploy Css input (HI.MarkupM ()) (HostedMarkupT m) where
+  deploy Css i = return $
+    H.link H.! A.rel "stylesheet"
+            H.! A.type_ "text/css"
+            H.! A.href (H.toValue i)
+
+instance ( Url T.Text HI.MarkupM
+         , Monad m ) =>
+             Deploy Css T.Text (HI.MarkupM ()) (LocalMarkupT m) where
+  deploy Css i = return $ do
+    link <- plainUrl i
+    H.link H.! A.rel "stylesheet"
+            H.! A.type_ "text/css"
+            H.! A.href (H.toValue link)
+
+instance ( Url T.Text HI.MarkupM
+         , Monad m ) =>
+             Deploy Css (UrlString T.Text) (HI.MarkupM ()) (LocalMarkupT m) where
+  deploy Css i = return $ do
+    link <- url i
+    H.link H.! A.rel "stylesheet"
+            H.! A.type_ "text/css"
+            H.! A.href (H.toValue link)
