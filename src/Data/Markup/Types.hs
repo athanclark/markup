@@ -61,12 +61,6 @@ instance Monad InlineMarkupM where
   return = InlineMarkupM
   x >>= f = f $ runInlineMarkupM x
 
-instance Monad w => Monoid (InlineMarkupM (w a)) where
-  x `mappend` y = InlineMarkupM $ do
-    runInlineMarkupM x
-    runInlineMarkupM y
-
-
 newtype HostedMarkupM a = HostedMarkupM {runHostedMarkupM :: a}
   deriving (Functor)
 
@@ -81,12 +75,6 @@ instance Monad HostedMarkupM where
   return = HostedMarkupM
   x >>= f = f $ runHostedMarkupM x
 
-instance Monad w => Monoid (HostedMarkupM (w a)) where
-  x `mappend` y = HostedMarkupM $ do
-    runHostedMarkupM x
-    runHostedMarkupM y
-
-
 newtype LocalMarkupM a = LocalMarkupM {runLocalMarkupM :: a}
   deriving (Functor)
 
@@ -100,8 +88,3 @@ instance Applicative LocalMarkupM where
 instance Monad LocalMarkupM where
   return = LocalMarkupM
   x >>= f = f $ runLocalMarkupM x
-
-instance Monad w => Monoid (LocalMarkupM (w a)) where
-  x `mappend` y = LocalMarkupM $ do
-    runLocalMarkupM x
-    runLocalMarkupM y
