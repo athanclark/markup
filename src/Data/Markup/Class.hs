@@ -1,9 +1,11 @@
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE KindSignatures #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE
+    MultiParamTypeClasses
+  , KindSignatures
+  , FlexibleInstances
+  , FlexibleContexts
+  , UndecidableInstances
+  , AllowAmbiguousTypes
+  #-}
 
 module Data.Markup.Class where
 

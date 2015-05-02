@@ -97,6 +97,12 @@ instance Url T.Text m =>
     url <- lift $ url i
     L.script_ [L.src_ url] ("" :: T.Text)
 
+instance Url T.Text m =>
+           Deploy JavaScript T.Text (LBase.HtmlT m ()) LocalMarkupM where
+  deploy JavaScript i = return $ do
+    url <- lift $ plainUrl i
+    L.script_ [L.src_ url] ("" :: T.Text)
+
 instance ( Monad m
          , Monad m' ) =>
              Deploy JavaScript T.Text (LBase.HtmlT m ()) (InlineMarkupT m') where
