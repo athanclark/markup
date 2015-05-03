@@ -44,16 +44,18 @@ instance Monad m =>
   deploy Image i = return $
     L.img_ [L.src_ i]
 
-instance Monad m =>
+instance ( Monad m
+         , Url T.Text m ) =>
            Deploy Image T.Text (LBase.HtmlT m ()) LocalMarkupM where
-  deploy Image i = return $
-    L.img_ [L.src_ i]
+  deploy Image i = return $ do
+    link <- lift $ plainUrl i
+    L.img_ [L.src_ link]
 
 instance Url T.Text m =>
            Deploy Image (UrlString T.Text) (LBase.HtmlT m ()) LocalMarkupM where
   deploy Image i = return $ do
-    url <- lift $ url i
-    L.img_ [L.src_ url]
+    link <- lift $ url i
+    L.img_ [L.src_ link]
 
 instance ( Monad m
          , Monad m' ) =>
@@ -62,17 +64,19 @@ instance ( Monad m
     L.img_ [L.src_ i]
 
 instance ( Monad m
-         , Monad m' ) =>
+         , Monad m'
+         , Url T.Text m ) =>
              Deploy Image T.Text (LBase.HtmlT m ()) (LocalMarkupT m') where
-  deploy Image i = return $
+  deploy Image i = return $ do
+    link <- lift $ plainUrl i
     L.img_ [L.src_ i]
 
 instance ( Url T.Text m
          , Monad m' ) =>
              Deploy Image (UrlString T.Text) (LBase.HtmlT m ()) (LocalMarkupT m') where
   deploy Image i = return $ do
-    url <- lift $ url i
-    L.img_ [L.src_ url]
+    link <- lift $ url i
+    L.img_ [L.src_ link]
 
 -- JS instances
 
@@ -120,6 +124,13 @@ instance ( Monad m
              Deploy JavaScript T.Text (LBase.HtmlT m ()) (HostedMarkupT m') where
   deploy JavaScript i = return $
     L.script_ [L.src_ i] ("" :: T.Text)
+
+instance ( Url T.Text m
+         , Monad m' ) =>
+             Deploy JavaScript T.Text (LBase.HtmlT m ()) (LocalMarkupT m') where
+  deploy JavaScript i = return $ do
+    link <- lift $ plainUrl i
+    L.script_ [L.src_ link] ("" :: T.Text)
 
 instance ( Url T.Text m
          , Monad m' ) =>
@@ -186,6 +197,16 @@ instance ( Monad m
                          , L.type_ "text/css"
                          , L.href_ i
                          ]
+
+instance ( Url T.Text m
+         , Monad m' ) =>
+             Deploy Css T.Text (LBase.HtmlT m ()) (LocalMarkupT m') where
+               deploy Css i = return $ do
+                 link <- lift $ plainUrl i
+                 L.link_ [ L.rel_ "stylesheet"
+                         , L.type_ "text/css"
+                         , L.href_ link
+                       ]
 
 instance ( Url T.Text m
          , Monad m' ) =>
