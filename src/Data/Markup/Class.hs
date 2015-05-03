@@ -1,21 +1,14 @@
-{-# LANGUAGE
-    MultiParamTypeClasses
-  , KindSignatures
-  , FlexibleInstances
-  , FlexibleContexts
-  , UndecidableInstances
-  , AllowAmbiguousTypes
-  #-}
+{-# LANGUAGE AllowAmbiguousTypes   #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE KindSignatures        #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE UndecidableInstances  #-}
 
 module Data.Markup.Class where
 
-import Data.Markup.Types
+import           Data.Markup.Types
 
-import Lucid
-import Data.Monoid
-import qualified Data.Text as T
-
-import Data.Functor.Identity
 
 -- | Overload assets and their markup library, over some deployment
 class Deploy symbol input markup (m :: * -> *) where

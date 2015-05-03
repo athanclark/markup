@@ -1,17 +1,15 @@
+{-# LANGUAGE DeriveFunctor              #-}
+{-# LANGUAGE FlexibleContexts           #-}
+{-# LANGUAGE FlexibleInstances          #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE DeriveFunctor #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE MultiParamTypeClasses      #-}
+{-# LANGUAGE StandaloneDeriving         #-}
 
 module Data.Markup.Types where
 
-import Data.Monoid
-import Control.Applicative
-import Control.Monad
-import Control.Monad.Trans
-import Control.Monad.Reader.Class
+import           Control.Applicative
+import           Control.Monad.Trans
+import           Data.Monoid
 
 
 

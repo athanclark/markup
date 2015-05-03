@@ -1,28 +1,27 @@
+{-# LANGUAGE ExtendedDefaultRules  #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ExtendedDefaultRules #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE OverloadedStrings     #-}
 
 module Data.Markup.Library where
 
-import Data.Markup.Class
-import Data.Markup.Types
+import           Data.Markup.Class
+import           Data.Markup.Types
 
-import UrlPath
+import           UrlPath
 
-import qualified Lucid as L
-import qualified Lucid.Base as LBase
+import qualified Lucid                       as L
+import qualified Lucid.Base                  as LBase
 
-import qualified Text.Blaze.Html5 as H
+import qualified Text.Blaze.Html5            as H
 import qualified Text.Blaze.Html5.Attributes as A
-import qualified Text.Blaze.Internal as HI
+import qualified Text.Blaze.Internal         as HI
 
-import qualified Data.Text as T
-import qualified Data.Text.Lazy as LT
+import qualified Data.Text                   as T
+import qualified Data.Text.Lazy              as LT
 
-import Data.Monoid
-import Control.Monad.Trans
+import           Control.Monad.Trans
 
 -- | The Image symbol
 data Image = Image deriving (Show, Eq)
@@ -69,7 +68,7 @@ instance ( Monad m
              Deploy Image T.Text (LBase.HtmlT m ()) (LocalMarkupT m') where
   deploy Image i = return $ do
     link <- lift $ plainUrl i
-    L.img_ [L.src_ i]
+    L.img_ [L.src_ link]
 
 instance ( Url T.Text m
          , Monad m' ) =>
@@ -98,14 +97,14 @@ instance Monad m =>
 instance Url T.Text m =>
            Deploy JavaScript (UrlString T.Text) (LBase.HtmlT m ()) LocalMarkupM where
   deploy JavaScript i = return $ do
-    url <- lift $ url i
-    L.script_ [L.src_ url] ("" :: T.Text)
+    link <- lift $ url i
+    L.script_ [L.src_ link] ("" :: T.Text)
 
 instance Url T.Text m =>
            Deploy JavaScript T.Text (LBase.HtmlT m ()) LocalMarkupM where
   deploy JavaScript i = return $ do
-    url <- lift $ plainUrl i
-    L.script_ [L.src_ url] ("" :: T.Text)
+    link <- lift $ plainUrl i
+    L.script_ [L.src_ link] ("" :: T.Text)
 
 instance ( Monad m
          , Monad m' ) =>

@@ -1,8 +1,7 @@
 module Data.Markup
-    ( module Data.Markup.Types
-    , module Data.Markup.Class
-    , module Data.Markup.Library ) where
+    ( module X
+    ) where
 
-import Data.Markup.Types
-import Data.Markup.Class
-import Data.Markup.Library
+import Data.Markup.Types as X
+import Data.Markup.Class as X
+import Data.Markup.Library as X
