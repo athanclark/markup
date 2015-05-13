@@ -1,32 +1,25 @@
-{-# LANGUAGE AllowAmbiguousTypes   #-}
-{-# LANGUAGE FlexibleContexts      #-}
-{-# LANGUAGE FlexibleInstances     #-}
-{-# LANGUAGE KindSignatures        #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE UndecidableInstances  #-}
+{-# LANGUAGE
+    FlexibleContexts
+  , FlexibleInstances
+  , KindSignatures
+  , MultiParamTypeClasses
+  , UndecidableInstances
+  #-}
 
 module Data.Markup.Class where
 
 import           Data.Markup.Types
-
+import           Control.Comonad
 
 -- | Overload assets and their markup library, over some deployment
 class Deploy symbol input markup (m :: * -> *) where
   deploy :: symbol -> input -> m markup
 
 -- | Overload extraction of (co)monad
-class Monad m => Markup (m :: * -> *) where
+class Markup (m :: * -> *) where
   renderMarkup :: m a -> a
   toMarkup :: a -> m a
 
-instance Markup InlineMarkupM where
-  renderMarkup = runInlineMarkupM
-  toMarkup = InlineMarkupM
-
-instance Markup HostedMarkupM where
-  renderMarkup = runHostedMarkupM
-  toMarkup = HostedMarkupM
-
-instance Markup LocalMarkupM where
-  renderMarkup = runLocalMarkupM
-  toMarkup = LocalMarkupM
+instance (Monad m, Comonad m) => Markup m where
+  renderMarkup = extract
+  toMarkup = return

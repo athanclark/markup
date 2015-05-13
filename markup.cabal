@@ -1,5 +1,5 @@
 Name:                   markup
-Version:                0.0.8
+Version:                1.0.0
 Author:                 Athan Clark <athan.clark@gmail.com>
 Maintainer:             Athan Clark <athan.clark@gmail.com>
 License:                MIT
@@ -57,6 +57,7 @@ Library
                       , blaze-markup
                       , text
                       , urlpath >= 1.0
+                      , comonad
 
 Test-Suite spec
   Type:                 exitcode-stdio-1.0
