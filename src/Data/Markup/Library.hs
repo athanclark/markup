@@ -1,15 +1,17 @@
-{-# LANGUAGE ExtendedDefaultRules  #-}
-{-# LANGUAGE FlexibleContexts      #-}
-{-# LANGUAGE FlexibleInstances     #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE OverloadedStrings     #-}
+{-# LANGUAGE
+    ExtendedDefaultRules
+  , FlexibleContexts     
+  , FlexibleInstances    
+  , MultiParamTypeClasses
+  , OverloadedStrings    
+  #-}
 
 module Data.Markup.Library where
 
 import           Data.Markup.Class
 import           Data.Markup.Types
 
-import           UrlPath
+import           Data.Url
 
 import qualified Lucid                       as L
 import qualified Lucid.Base                  as LBase
