@@ -1,9 +1,9 @@
 {-# LANGUAGE
     ExtendedDefaultRules
-  , FlexibleContexts     
-  , FlexibleInstances    
+  , FlexibleContexts
+  , FlexibleInstances
   , MultiParamTypeClasses
-  , OverloadedStrings    
+  , OverloadedStrings
   #-}
 
 module Data.Markup.Library where
@@ -25,15 +25,10 @@ import qualified Data.Text.Lazy              as LT
 
 import           Control.Monad.Trans
 
--- | The Image symbol
 data Image = Image deriving (Show, Eq)
-
--- | The JavaScript symbol
 data JavaScript = JavaScript deriving (Show, Eq)
-
--- | The Css symbol
 data Css = Css deriving (Show, Eq)
-
+data WebComponent = WebComponent deriving (Show, Eq)
 
 -- Lucid instances
 
@@ -53,9 +48,9 @@ instance ( Monad m
     L.img_ [L.src_ link]
 
 instance Url T.Text m =>
-           Deploy Image (UrlString T.Text) (LBase.HtmlT m ()) LocalMarkupM where
+           Deploy Image (QueryString T.Text) (LBase.HtmlT m ()) LocalMarkupM where
   deploy Image i = return $ do
-    link <- lift $ url i
+    link <- lift $ queryUrl i
     L.img_ [L.src_ link]
 
 instance ( Monad m
@@ -74,9 +69,9 @@ instance ( Monad m
 
 instance ( Url T.Text m
          , Monad m' ) =>
-             Deploy Image (UrlString T.Text) (LBase.HtmlT m ()) (LocalMarkupT m') where
+             Deploy Image (QueryString T.Text) (LBase.HtmlT m ()) (LocalMarkupT m') where
   deploy Image i = return $ do
-    link <- lift $ url i
+    link <- lift $ queryUrl i
     L.img_ [L.src_ link]
 
 -- JS instances
@@ -97,9 +92,9 @@ instance Monad m =>
     L.script_ [L.src_ i] ("" :: T.Text)
 
 instance Url T.Text m =>
-           Deploy JavaScript (UrlString T.Text) (LBase.HtmlT m ()) LocalMarkupM where
+           Deploy JavaScript (QueryString T.Text) (LBase.HtmlT m ()) LocalMarkupM where
   deploy JavaScript i = return $ do
-    link <- lift $ url i
+    link <- lift $ queryUrl i
     L.script_ [L.src_ link] ("" :: T.Text)
 
 instance Url T.Text m =>
@@ -135,9 +130,9 @@ instance ( Url T.Text m
 
 instance ( Url T.Text m
          , Monad m' ) =>
-             Deploy JavaScript (UrlString T.Text) (LBase.HtmlT m ()) (LocalMarkupT m') where
+             Deploy JavaScript (QueryString T.Text) (LBase.HtmlT m ()) (LocalMarkupT m') where
   deploy JavaScript i = return $ do
-    link <- lift $ url i
+    link <- lift $ queryUrl i
     L.script_ [L.src_ link] ("" :: T.Text)
 
 -- Css instances
@@ -170,9 +165,9 @@ instance Url T.Text m =>
               ]
 
 instance Url T.Text m =>
-  Deploy Css (UrlString T.Text) (LBase.HtmlT m ()) LocalMarkupM where
+  Deploy Css (QueryString T.Text) (LBase.HtmlT m ()) LocalMarkupM where
     deploy Css i = return $ do
-      link <- lift $ url i
+      link <- lift $ queryUrl i
       L.link_ [ L.rel_ "stylesheet"
               , L.type_ "text/css"
               , L.href_ link
@@ -211,14 +206,68 @@ instance ( Url T.Text m
 
 instance ( Url T.Text m
          , Monad m' ) =>
-             Deploy Css (UrlString T.Text) (LBase.HtmlT m ()) (LocalMarkupT m') where
+             Deploy Css (QueryString T.Text) (LBase.HtmlT m ()) (LocalMarkupT m') where
                deploy Css i = return $ do
-                 link <- lift $ url i
+                 link <- lift $ queryUrl i
                  L.link_ [ L.rel_ "stylesheet"
                          , L.type_ "text/css"
                          , L.href_ link
                        ]
 
+-- WebComponent instances
+
+instance Monad m =>
+  Deploy WebComponent T.Text (LBase.HtmlT m ()) HostedMarkupM where
+    deploy WebComponent i = return $
+      L.link_ [ L.rel_ "import"
+              , L.href_ i
+              ]
+
+instance ( Monad m
+         , Url T.Text m ) =>
+  Deploy WebComponent T.Text (LBase.HtmlT m ()) LocalMarkupM where
+    deploy WebComponent i = return $ do
+      link <- lift $ plainUrl i
+      L.link_ [ L.rel_ "import"
+              , L.href_ link
+              ]
+
+instance ( Monad m
+         , Url T.Text m ) =>
+  Deploy WebComponent (QueryString T.Text) (LBase.HtmlT m ()) LocalMarkupM where
+    deploy WebComponent i = return $ do
+      link <- lift $ queryUrl i
+      L.link_ [ L.rel_ "import"
+              , L.href_ link
+              ]
+
+instance ( Monad m
+         , Monad m' ) =>
+  Deploy WebComponent T.Text (LBase.HtmlT m ()) (HostedMarkupT m') where
+    deploy WebComponent i = return $
+      L.link_ [ L.rel_ "import"
+              , L.href_ i
+              ]
+
+instance ( Monad m
+         , Monad m'
+         , Url T.Text m ) =>
+  Deploy WebComponent T.Text (LBase.HtmlT m ()) (LocalMarkupT m') where
+    deploy WebComponent i = return $ do
+      link <- lift $ plainUrl i
+      L.link_ [ L.rel_ "import"
+              , L.href_ link
+              ]
+
+instance ( Monad m
+         , Monad m'
+         , Url T.Text m ) =>
+  Deploy WebComponent (QueryString T.Text) (LBase.HtmlT m ()) (LocalMarkupT m') where
+    deploy WebComponent i = return $ do
+      link <- lift $ queryUrl i
+      L.link_ [ L.rel_ "import"
+              , L.href_ link
+              ]
 
 -- Blaze-html instances
 
@@ -235,9 +284,9 @@ instance Url T.Text HI.MarkupM =>
     H.img H.! A.src (H.toValue link)
 
 instance Url T.Text HI.MarkupM =>
-           Deploy Image (UrlString T.Text) (HI.MarkupM ()) LocalMarkupM where
+           Deploy Image (QueryString T.Text) (HI.MarkupM ()) LocalMarkupM where
   deploy Image i = return $ do
-    link <- url i
+    link <- queryUrl i
     H.img H.! A.src (H.toValue link)
 
 instance ( H.ToValue input
@@ -255,9 +304,9 @@ instance ( Url T.Text HI.MarkupM
 
 instance ( Url T.Text HI.MarkupM
          , Monad m ) =>
-             Deploy Image (UrlString T.Text) (HI.MarkupM ()) (LocalMarkupT m) where
+             Deploy Image (QueryString T.Text) (HI.MarkupM ()) (LocalMarkupT m) where
   deploy Image i = return $ do
-    link <- url i
+    link <- queryUrl i
     H.img H.! A.src (H.toValue link)
 
 
@@ -279,9 +328,9 @@ instance Url T.Text HI.MarkupM =>
     (H.script H.! A.src (H.toValue link)) HI.Empty
 
 instance Url T.Text HI.MarkupM =>
-           Deploy JavaScript (UrlString T.Text) (HI.MarkupM ()) LocalMarkupM where
+           Deploy JavaScript (QueryString T.Text) (HI.MarkupM ()) LocalMarkupM where
   deploy JavaScript i = return $ do
-    link <- url i
+    link <- queryUrl i
     (H.script H.! A.src (H.toValue link)) HI.Empty
 
 instance ( H.ToMarkup input
@@ -305,9 +354,9 @@ instance ( Url T.Text HI.MarkupM
 
 instance ( Url T.Text HI.MarkupM
          , Monad m ) =>
-             Deploy JavaScript (UrlString T.Text) (HI.MarkupM ()) (LocalMarkupT m) where
+             Deploy JavaScript (QueryString T.Text) (HI.MarkupM ()) (LocalMarkupT m) where
   deploy JavaScript i = return $ do
-    link <- url i
+    link <- queryUrl i
     (H.script H.! A.src (H.toValue link)) HI.Empty
 
 
@@ -333,9 +382,9 @@ instance Url T.Text HI.MarkupM =>
             H.! A.href (H.toValue link)
 
 instance Url T.Text HI.MarkupM =>
-           Deploy Css (UrlString T.Text) (HI.MarkupM ()) LocalMarkupM where
+           Deploy Css (QueryString T.Text) (HI.MarkupM ()) LocalMarkupM where
   deploy Css i = return $ do
-    link <- url i
+    link <- queryUrl i
     H.link H.! A.rel "stylesheet"
             H.! A.type_ "text/css"
             H.! A.href (H.toValue link)
@@ -365,9 +414,55 @@ instance ( Url T.Text HI.MarkupM
 
 instance ( Url T.Text HI.MarkupM
          , Monad m ) =>
-             Deploy Css (UrlString T.Text) (HI.MarkupM ()) (LocalMarkupT m) where
+             Deploy Css (QueryString T.Text) (HI.MarkupM ()) (LocalMarkupT m) where
   deploy Css i = return $ do
-    link <- url i
+    link <- queryUrl i
     H.link H.! A.rel "stylesheet"
             H.! A.type_ "text/css"
             H.! A.href (H.toValue link)
+
+instance H.ToValue input =>
+           Deploy WebComponent input (HI.MarkupM ()) HostedMarkupM where
+  deploy WebComponent i = return $
+    H.link H.! A.rel "import"
+           H.! A.href (H.toValue i)
+
+instance Url T.Text HI.MarkupM =>
+           Deploy WebComponent T.Text (HI.MarkupM ()) LocalMarkupM where
+  deploy WebComponent i = return $ do
+    link <- plainUrl i
+    H.link H.! A.rel "import"
+           H.! A.href (H.toValue link)
+
+instance Url T.Text HI.MarkupM =>
+           Deploy WebComponent (QueryString T.Text) (HI.MarkupM ()) LocalMarkupM where
+  deploy WebComponent i = return $ do
+    link <- queryUrl i
+    H.link H.! A.rel "import"
+           H.! A.href (H.toValue link)
+
+instance ( H.ToValue input
+         , Monad m'
+         ) =>
+           Deploy WebComponent input (HI.MarkupM ()) (HostedMarkupT m') where
+  deploy WebComponent i = return $
+    H.link H.! A.rel "import"
+           H.! A.href (H.toValue i)
+
+instance ( Monad m'
+         , Url T.Text HI.MarkupM
+         ) =>
+           Deploy WebComponent T.Text (HI.MarkupM ()) (LocalMarkupT m') where
+  deploy WebComponent i = return $ do
+    link <- plainUrl i
+    H.link H.! A.rel "import"
+           H.! A.href (H.toValue link)
+
+instance ( Monad m'
+         , Url T.Text HI.MarkupM
+         ) =>
+           Deploy WebComponent (QueryString T.Text) (HI.MarkupM ()) (LocalMarkupT m') where
+  deploy WebComponent i = return $ do
+    link <- queryUrl i
+    H.link H.! A.rel "import"
+           H.! A.href (H.toValue link)
