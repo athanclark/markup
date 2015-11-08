@@ -31,26 +31,15 @@ Library
                         Data.Markup.Types
                         Data.Markup.Class
                         Data.Markup.Library
-  Build-Depends:        base >= 4 && < 5
-                      , transformers
-                      , mtl
-                      , lucid >= 2.5
+  Build-Depends:        base >= 4.8 && < 5
                       , blaze-html
                       , blaze-markup
+                      , comonad
+                      , lucid >= 2.5
+                      , mtl
+                      , path-extra >= 0.0.1
                       , text
                       , urlpath >= 3.1.0
-                      , comonad
-                      , path-extra >= 0.0.1
-
-Test-Suite spec
-  Type:                 exitcode-stdio-1.0
-  Default-Language:     Haskell2010
-  Hs-Source-Dirs:       src
-                      , test
-  Ghc-Options:          -Wall
-  Main-Is:              Spec.hs
-  Build-Depends:        base
-                      , hspec
 
 Source-Repository head
   Type:                 git
