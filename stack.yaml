@@ -8,7 +8,7 @@ packages:
 - '.'
 - location:
     git: https://github.com/athanclark/urlpath
-    commit: 21eaa828367ebd2806ed93d912d49f49c758f50a
+    commit: f19730bb973b84f6dfa7c8049f1c4bb6de1ab36b
   extra-dep: true
 
 # Packages to be pulled from upstream that are not in the resolver (e.g., acme-missiles-0.3)

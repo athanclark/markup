@@ -35,10 +35,16 @@ newtype InlineMarkupT m a = InlineMarkupT
   { runInlineMarkupT :: m a
   } deriving (Monoid, Functor, Applicative, Alternative, Monad, MonadIO, MonadFix
              , MonadPlus, MonadReader r, MonadState s, MonadWriter w, MonadRWS r w s
-             , MonadError e, MonadThrow, MonadCatch, MonadMask, MonadCont, MonadBase b
-             , MonadUrl b)
+             , MonadError e, MonadThrow, MonadCatch, MonadMask, MonadCont, MonadBase b)
 
 type InlineMarkup = InlineMarkupT Identity
+
+instance ( MonadUrl b m
+         , MonadThrow m
+         ) => MonadUrl b (InlineMarkupT m) where
+  pathUrl   = lift . pathUrl
+  locUrl    = lift . locUrl
+  symbolUrl = symbolUrl
 
 instance MFunctor InlineMarkupT where
   hoist f (InlineMarkupT x) = InlineMarkupT (f x)
@@ -73,10 +79,16 @@ newtype HostedMarkupT m a = HostedMarkupT
   { runHostedMarkupT :: m a
   } deriving (Monoid, Functor, Applicative, Alternative, Monad, MonadIO, MonadFix
              , MonadPlus, MonadReader r, MonadState s, MonadWriter w, MonadRWS r w s
-             , MonadError e, MonadThrow, MonadCatch, MonadMask, MonadCont, MonadBase b
-             , MonadUrl b)
+             , MonadError e, MonadThrow, MonadCatch, MonadMask, MonadCont, MonadBase b)
 
 type HostedMarkup = HostedMarkupT Identity
+
+instance ( MonadUrl b m
+         , MonadThrow m
+         ) => MonadUrl b (HostedMarkupT m) where
+  pathUrl   = lift . pathUrl
+  locUrl    = lift . locUrl
+  symbolUrl = symbolUrl
 
 instance MFunctor HostedMarkupT where
   hoist f (HostedMarkupT x) = HostedMarkupT (f x)
@@ -111,11 +123,16 @@ newtype LocalMarkupT m a = LocalMarkupT
   { runLocalMarkupT :: m a
   } deriving (Monoid, Functor, Applicative, Alternative, Monad, MonadIO, MonadFix
              , MonadPlus, MonadReader r, MonadState s, MonadWriter w, MonadRWS r w s
-             , MonadError e, MonadThrow, MonadCatch, MonadMask, MonadCont, MonadBase b
-             , MonadUrl b)
+             , MonadError e, MonadThrow, MonadCatch, MonadMask, MonadCont, MonadBase b)
 
 type LocalMarkup = LocalMarkupT Identity
 
+instance ( MonadUrl b m
+         , MonadThrow m
+         ) => MonadUrl b (LocalMarkupT m) where
+  pathUrl   = lift . pathUrl
+  locUrl    = lift . locUrl
+  symbolUrl = symbolUrl
 
 instance MFunctor LocalMarkupT where
   hoist f (LocalMarkupT x) = LocalMarkupT (f x)

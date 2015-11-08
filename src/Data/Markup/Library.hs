@@ -25,6 +25,7 @@ import qualified Text.Blaze.Internal         as HI
 
 import qualified Data.Text                   as T
 import qualified Data.Text.Lazy              as LT
+import           Control.Monad.Catch
 
 
 data Image        = Image        deriving (Show, Eq)
@@ -42,6 +43,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy Image (Path b t) (LBase.HtmlT m ()) (HostedMarkupT m) where
   deploy Image i = do
     link <- pathUrl i
@@ -49,6 +51,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy Image (Location b t) (LBase.HtmlT m ()) (HostedMarkupT m) where
   deploy Image i = do
     link <- locUrl i
@@ -56,6 +59,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          , ToLocation s b t
          ) => Deploy Image s (LBase.HtmlT m ()) (HostedMarkupT m) where
   deploy Image i = do
@@ -69,6 +73,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy Image (Path b t) (LBase.HtmlT m ()) (LocalMarkupT m) where
   deploy Image i = do
     link <- pathUrl i
@@ -76,6 +81,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy Image (Location b t) (LBase.HtmlT m ()) (LocalMarkupT m) where
   deploy Image i = do
     link <- locUrl i
@@ -83,6 +89,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          , ToLocation s b t
          ) => Deploy Image s (LBase.HtmlT m ()) (LocalMarkupT m) where
   deploy Image i = do
@@ -99,6 +106,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy Image (Path b t) (HI.MarkupM ()) (HostedMarkupT m) where
   deploy Image i = do
     link <- pathUrl i
@@ -106,6 +114,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy Image (Location b t) (HI.MarkupM ()) (HostedMarkupT m) where
   deploy Image i = do
     link <- locUrl i
@@ -113,6 +122,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          , ToLocation s b t
          ) => Deploy Image s (HI.MarkupM ()) (HostedMarkupT m) where
   deploy Image i = do
@@ -126,6 +136,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy Image (Path b t) (HI.MarkupM ()) (LocalMarkupT m) where
   deploy Image i = do
     link <- pathUrl i
@@ -133,6 +144,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy Image (Location b t) (HI.MarkupM ()) (LocalMarkupT m) where
   deploy Image i = do
     link <- locUrl i
@@ -140,6 +152,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          , ToLocation s b t
          ) => Deploy Image s (HI.MarkupM ()) (LocalMarkupT m) where
   deploy Image i = do
@@ -166,6 +179,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy JavaScript (Path b t) (LBase.HtmlT m ()) (HostedMarkupT m) where
   deploy JavaScript i = do
     link <- pathUrl i
@@ -173,6 +187,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy JavaScript (Location b t) (LBase.HtmlT m ()) (HostedMarkupT m) where
   deploy JavaScript i = do
     link <- locUrl i
@@ -180,6 +195,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          , ToLocation s b t
          ) => Deploy JavaScript s (LBase.HtmlT m ()) (HostedMarkupT m) where
   deploy JavaScript i = do
@@ -193,6 +209,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy JavaScript (Path b t) (LBase.HtmlT m ()) (LocalMarkupT m) where
   deploy JavaScript i = do
     link <- pathUrl i
@@ -200,6 +217,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy JavaScript (Location b t) (LBase.HtmlT m ()) (LocalMarkupT m) where
   deploy JavaScript i = do
     link <- locUrl i
@@ -207,6 +225,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          , ToLocation s b t
          ) => Deploy JavaScript s (LBase.HtmlT m ()) (LocalMarkupT m) where
   deploy JavaScript i = do
@@ -232,6 +251,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy JavaScript (Path b t) (HI.MarkupM ()) (HostedMarkupT m) where
   deploy JavaScript i = do
     link <- pathUrl i
@@ -239,6 +259,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy JavaScript (Location b t) (HI.MarkupM ()) (HostedMarkupT m) where
   deploy JavaScript i = do
     link <- locUrl i
@@ -246,6 +267,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          , ToLocation s b t
          ) => Deploy JavaScript s (HI.MarkupM ()) (HostedMarkupT m) where
   deploy JavaScript i = do
@@ -259,6 +281,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy JavaScript (Path b t) (HI.MarkupM ()) (LocalMarkupT m) where
   deploy JavaScript i = do
     link <- pathUrl i
@@ -266,6 +289,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy JavaScript (Location b t) (HI.MarkupM ()) (LocalMarkupT m) where
   deploy JavaScript i = do
     link <- locUrl i
@@ -273,6 +297,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          , ToLocation s b t
          ) => Deploy JavaScript s (HI.MarkupM ()) (LocalMarkupT m) where
   deploy JavaScript i = do
@@ -302,6 +327,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy Css (Path b t) (LBase.HtmlT m ()) (HostedMarkupT m) where
   deploy Css i = do
     link <- pathUrl i
@@ -312,6 +338,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy Css (Location b t) (LBase.HtmlT m ()) (HostedMarkupT m) where
   deploy Css i = do
     link <- locUrl i
@@ -322,6 +349,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          , ToLocation s b t
          ) => Deploy Css s (LBase.HtmlT m ()) (HostedMarkupT m) where
   deploy Css i = do
@@ -341,6 +369,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy Css (Path b t) (LBase.HtmlT m ()) (LocalMarkupT m) where
   deploy Css i = do
     link <- pathUrl i
@@ -351,6 +380,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy Css (Location b t) (LBase.HtmlT m ()) (LocalMarkupT m) where
   deploy Css i = do
     link <- locUrl i
@@ -361,6 +391,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          , ToLocation s b t
          ) => Deploy Css s (LBase.HtmlT m ()) (LocalMarkupT m) where
   deploy Css i = do
@@ -389,6 +420,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy Css (Path b t) (HI.MarkupM ()) (HostedMarkupT m) where
   deploy Css i = do
     link <- pathUrl i
@@ -398,6 +430,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy Css (Location b t) (HI.MarkupM ()) (HostedMarkupT m) where
   deploy Css i = do
     link <- locUrl i
@@ -407,6 +440,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          , ToLocation s b t
          ) => Deploy Css s (HI.MarkupM ()) (HostedMarkupT m) where
   deploy Css i = do
@@ -424,6 +458,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy Css (Path b t) (HI.MarkupM ()) (LocalMarkupT m) where
   deploy Css i = do
     link <- pathUrl i
@@ -433,6 +468,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy Css (Location b t) (HI.MarkupM ()) (LocalMarkupT m) where
   deploy Css i = do
     link <- locUrl i
@@ -442,6 +478,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          , ToLocation s b t
          ) => Deploy Css s (HI.MarkupM ()) (LocalMarkupT m) where
   deploy Css i = do
@@ -462,6 +499,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy WebComponent (Path b t) (LBase.HtmlT m ()) (HostedMarkupT m) where
   deploy WebComponent i = do
     link <- pathUrl i
@@ -471,6 +509,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy WebComponent (Location b t) (LBase.HtmlT m ()) (HostedMarkupT m) where
   deploy WebComponent i = do
     link <- locUrl i
@@ -480,6 +519,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          , ToLocation s b t
          ) => Deploy WebComponent s (LBase.HtmlT m ()) (HostedMarkupT m) where
   deploy WebComponent i = do
@@ -497,6 +537,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy WebComponent (Path b t) (LBase.HtmlT m ()) (LocalMarkupT m) where
   deploy WebComponent i = do
     link <- pathUrl i
@@ -506,6 +547,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy WebComponent (Location b t) (LBase.HtmlT m ()) (LocalMarkupT m) where
   deploy WebComponent i = do
     link <- locUrl i
@@ -515,6 +557,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          , ToLocation s b t
          ) => Deploy WebComponent s (LBase.HtmlT m ()) (LocalMarkupT m) where
   deploy WebComponent i = do
@@ -534,6 +577,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy WebComponent (Path b t) (HI.MarkupM ()) (HostedMarkupT m) where
   deploy WebComponent i = do
     link <- pathUrl i
@@ -542,6 +586,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy WebComponent (Location b t) (HI.MarkupM ()) (HostedMarkupT m) where
   deploy WebComponent i = do
     link <- locUrl i
@@ -550,6 +595,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          , ToLocation s b t
          ) => Deploy WebComponent s (HI.MarkupM ()) (HostedMarkupT m) where
   deploy WebComponent i = do
@@ -565,6 +611,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy WebComponent (Path b t) (HI.MarkupM ()) (LocalMarkupT m) where
   deploy WebComponent i = do
     link <- pathUrl i
@@ -573,6 +620,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          ) => Deploy WebComponent (Location b t) (HI.MarkupM ()) (LocalMarkupT m) where
   deploy WebComponent i = do
     link <- locUrl i
@@ -581,6 +629,7 @@ instance ( Monad m
 
 instance ( Monad m
          , MonadUrl b m
+         , MonadThrow m
          , ToLocation s b t
          ) => Deploy WebComponent s (HI.MarkupM ()) (LocalMarkupT m) where
   deploy WebComponent i = do
