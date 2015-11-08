@@ -11,6 +11,8 @@
 
 module Data.Markup.Types where
 
+import Data.Markup.Class
+
 import Data.Url
 import Data.Functor.Identity
 import Control.Applicative
@@ -26,7 +28,6 @@ import Control.Monad.Cont
 import Control.Monad.Base
 import Control.Monad.Catch
 import Control.Monad.Morph
-import Control.Comonad
 
 
 -- * Inline Deployment
@@ -63,11 +64,8 @@ instance ( MonadBaseControl b m
   liftBaseWith = defaultLiftBaseWith
   restoreM = defaultRestoreM
 
-instance ( Comonad m
-         , Monad m
-         ) => Comonad (InlineMarkupT m) where
-  extract = extract . runInlineMarkupT
-  duplicate = InlineMarkupT . return
+instance Markup InlineMarkupT where
+  renderMarkup = runInlineMarkupT
 
 instance MonadTrans InlineMarkupT where
   lift = InlineMarkupT
@@ -107,11 +105,8 @@ instance ( MonadBaseControl b m
   liftBaseWith = defaultLiftBaseWith
   restoreM = defaultRestoreM
 
-instance ( Comonad m
-         , Monad m
-         ) => Comonad (HostedMarkupT m) where
-  extract = extract . runHostedMarkupT
-  duplicate = HostedMarkupT . return
+instance Markup HostedMarkupT where
+  renderMarkup = runHostedMarkupT
 
 instance MonadTrans HostedMarkupT where
   lift = HostedMarkupT
@@ -151,12 +146,8 @@ instance ( MonadBaseControl b m
   liftBaseWith = defaultLiftBaseWith
   restoreM = defaultRestoreM
 
-
-instance ( Comonad m
-         , Monad m
-         ) => Comonad (LocalMarkupT m) where
-  extract = extract . runLocalMarkupT
-  duplicate = LocalMarkupT . return
+instance Markup LocalMarkupT where
+  renderMarkup = runLocalMarkupT
 
 instance MonadTrans LocalMarkupT where
   lift = LocalMarkupT

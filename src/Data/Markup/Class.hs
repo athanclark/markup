@@ -15,13 +15,6 @@ import Control.Comonad
 class Deploy symbol input markup (m :: * -> *) where
   deploy :: symbol -> input -> m markup
 
--- | Overload extraction of (co)monad
-class Markup (m :: * -> *) where
-  renderMarkup :: m a -> a
-  toMarkup :: a -> m a
-
-instance ( Monad m
-         , Comonad m
-         ) => Markup m where
-  renderMarkup = extract
-  toMarkup = return
+-- | Overloaded monad transformer execution.
+class Markup (t :: (* -> *) -> * -> *) where
+  renderMarkup :: t m a -> m a
