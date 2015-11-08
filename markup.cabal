@@ -1,5 +1,5 @@
 Name:                   markup
-Version:                1.1.0
+Version:                2.0.0
 Author:                 Athan Clark <athan.clark@gmail.com>
 Maintainer:             Athan Clark <athan.clark@gmail.com>
 License:                MIT
@@ -19,24 +19,6 @@ Description:
   slapped between markup tags), /hosted/ (entirely external - uses raw text as a
   url), and /local/ (which uses the <hackage.haskell.org/package/urlpath urlpath>
   library to realize what kind of link to create).
-  .
-  As an example, here is remotely hosted image:
-  .
-  > image = deploy Image "foo.png" :: HostedMarkupM (Html ())
-  >
-  > λ> renderMarkup image
-  >
-  > <img src="foo.png">
-  .
-  Here is the same example, going relative instead:
-  .
-  > image :: LocalMarkupM (HtmlT AbsoluteUrl ())
-  > image = deploy Image $ "foo.png" <?> ("some","getparam")
-  >
-  > λ> (runUrlReader $ renderTextT $ renderMarkup image $
-  >    ) "example.com"
-  >
-  > "<img src=\"example.com/foo.png?some=getparam\">"
 
 Cabal-Version:          >= 1.10
 Build-Type:             Simple
@@ -56,8 +38,9 @@ Library
                       , blaze-html
                       , blaze-markup
                       , text
-                      , urlpath >= 2
+                      , urlpath >= 3.1.0
                       , comonad
+                      , path-extra >= 0.0.1
 
 Test-Suite spec
   Type:                 exitcode-stdio-1.0

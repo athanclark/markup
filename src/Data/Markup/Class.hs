@@ -8,8 +8,8 @@
 
 module Data.Markup.Class where
 
-import           Data.Markup.Types
-import           Control.Comonad
+import Control.Comonad
+
 
 -- | Overload assets and their markup library, over some deployment
 class Deploy symbol input markup (m :: * -> *) where
@@ -20,6 +20,8 @@ class Markup (m :: * -> *) where
   renderMarkup :: m a -> a
   toMarkup :: a -> m a
 
-instance (Monad m, Comonad m) => Markup m where
+instance ( Monad m
+         , Comonad m
+         ) => Markup m where
   renderMarkup = extract
   toMarkup = return
