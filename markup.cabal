@@ -5,7 +5,7 @@ Maintainer:             Athan Clark <athan.clark@gmail.com>
 License:                MIT
 License-File:           LICENSE
 Category:               Data, Web
-Synopsis:               Abstraction for markup languages
+Synopsis:               Abstraction for HTML-embedded content
 Description:
   This library tries to make things more uniformly controlled when working with
   markup languages in haskell - namely /deployment/ of markup assets.
