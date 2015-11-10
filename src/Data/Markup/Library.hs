@@ -13,19 +13,17 @@ import           Data.Markup.Class
 import           Data.Markup.Types
 
 import           Data.Url
-
 import           Path.Extended
 
 import qualified Lucid                       as L
-import qualified Lucid.Base                  as LBase
-
 import qualified Text.Blaze.Html5            as H
 import qualified Text.Blaze.Html5.Attributes as A
 import qualified Text.Blaze.Internal         as HI
+import qualified Clay                        as C
 
 import qualified Data.Text                   as T
 import qualified Data.Text.Lazy              as LT
-import           Control.Monad.Catch
+import           Control.Monad.Trans
 
 
 data Image        = Image        deriving (Show, Eq)
@@ -36,603 +34,554 @@ data WebComponent = WebComponent deriving (Show, Eq)
 
 -- Images
 
-instance ( Monad m
-         ) => Deploy Image T.Text (LBase.HtmlT m ()) (HostedMarkupT m) where
-  deploy Image i =
-    return $ L.img_ [L.src_ i]
+-- Remote
+
+linkedImageLucid :: Monad m => T.Text -> L.HtmlT m ()
+linkedImageLucid link =
+  L.img_ [L.src_ link]
 
 instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy Image (Path b t) (LBase.HtmlT m ()) (HostedMarkupT m) where
-  deploy Image i = do
-    link <- pathUrl i
-    return $ L.img_ [L.src_ (T.pack link)]
+         ) => Deploy Image Remote T.Text (L.HtmlT m ()) where
+  deploy Image Remote link = linkedImageLucid link
 
 instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy Image (Location b t) (LBase.HtmlT m ()) (HostedMarkupT m) where
-  deploy Image i = do
-    link <- locUrl i
-    return $ L.img_ [L.src_ (T.pack link)]
+         , MonadUrl Abs t (AbsoluteUrlT m)
+         ) => Deploy Image Remote (Path Abs t) (L.HtmlT (AbsoluteUrlT m) ()) where
+  deploy Image Remote i = do
+    link <- lift (pathUrl i)
+    linkedImageLucid (T.pack link)
 
 instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         , ToLocation s b t
-         ) => Deploy Image s (LBase.HtmlT m ()) (HostedMarkupT m) where
-  deploy Image i = do
-    link <- symbolUrl i
-    return $ L.img_ [L.src_ (T.pack link)]
+         , MonadUrl Abs t (AbsoluteUrlT m)
+         ) => Deploy Image Remote (Location Abs t) (L.HtmlT (AbsoluteUrlT m) ()) where
+  deploy Image Remote i = do
+    link <- lift (locUrl i)
+    linkedImageLucid (T.pack link)
+
+
+-- Local
 
 instance ( Monad m
-         ) => Deploy Image T.Text (LBase.HtmlT m ()) (LocalMarkupT m) where
-  deploy Image i =
-    return $ L.img_ [L.src_ i]
+         ) => Deploy Image Locally T.Text (L.HtmlT m ()) where
+  deploy Image Locally link = linkedImageLucid link
 
 instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy Image (Path b t) (LBase.HtmlT m ()) (LocalMarkupT m) where
-  deploy Image i = do
-    link <- pathUrl i
-    return $ L.img_ [L.src_ (T.pack link)]
+         , MonadUrl Abs t (GroundedUrlT m)
+         ) => Deploy Image Locally (Path Abs t) (L.HtmlT (GroundedUrlT m) ()) where
+  deploy Image Locally i = do
+    link <- lift (pathUrl i)
+    linkedImageLucid (T.pack link)
 
 instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy Image (Location b t) (LBase.HtmlT m ()) (LocalMarkupT m) where
-  deploy Image i = do
-    link <- locUrl i
-    return $ L.img_ [L.src_ (T.pack link)]
+         , MonadUrl Rel t (RelativeUrlT m)
+         ) => Deploy Image Locally (Path Rel t) (L.HtmlT (RelativeUrlT m) ()) where
+  deploy Image Locally i = do
+    link <- lift (pathUrl i)
+    linkedImageLucid (T.pack link)
 
 instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         , ToLocation s b t
-         ) => Deploy Image s (LBase.HtmlT m ()) (LocalMarkupT m) where
-  deploy Image i = do
-    link <- symbolUrl i
-    return $ L.img_ [L.src_ (T.pack link)]
+         , MonadUrl Abs t (GroundedUrlT m)
+         ) => Deploy Image Locally (Location Abs t) (L.HtmlT (GroundedUrlT m) ()) where
+  deploy Image Locally i = do
+    link <- lift (locUrl i)
+    linkedImageLucid (T.pack link)
+
+instance ( Monad m
+         , MonadUrl Rel t (RelativeUrlT m)
+         ) => Deploy Image Locally (Location Rel t) (L.HtmlT (RelativeUrlT m) ()) where
+  deploy Image Locally i = do
+    link <- lift (locUrl i)
+    linkedImageLucid (T.pack link)
 
 
 -- Blaze
 
-instance ( Monad m
-         ) => Deploy Image T.Text (HI.MarkupM ()) (HostedMarkupT m) where
-  deploy Image link =
-    return $ H.img H.! A.src (H.toValue link)
+-- Remote
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy Image (Path b t) (HI.MarkupM ()) (HostedMarkupT m) where
-  deploy Image i = do
+linkedImageBlaze :: T.Text -> HI.MarkupM ()
+linkedImageBlaze link =
+  H.img H.! A.src (H.toValue link)
+
+instance Deploy Image Remote T.Text (HI.MarkupM ()) where
+  deploy Image Remote link = linkedImageBlaze link
+
+instance ( MonadUrl Abs t (AbsoluteUrlT HI.MarkupM)
+         ) => Deploy Image Remote (Path Abs t) (AbsoluteUrlT HI.MarkupM ()) where
+  deploy Image Remote i = do
     link <- pathUrl i
-    return $ H.img H.! A.src (H.toValue link)
+    lift (linkedImageBlaze (T.pack link))
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy Image (Location b t) (HI.MarkupM ()) (HostedMarkupT m) where
-  deploy Image i = do
+instance ( MonadUrl Abs t (AbsoluteUrlT HI.MarkupM)
+         ) => Deploy Image Remote (Location Abs t) (AbsoluteUrlT HI.MarkupM ()) where
+  deploy Image Remote i = do
     link <- locUrl i
-    return $ H.img H.! A.src (H.toValue link)
+    lift (linkedImageBlaze (T.pack link))
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         , ToLocation s b t
-         ) => Deploy Image s (HI.MarkupM ()) (HostedMarkupT m) where
-  deploy Image i = do
-    link <- symbolUrl i
-    return $ H.img H.! A.src (H.toValue link)
 
-instance ( Monad m
-         ) => Deploy Image T.Text (HI.MarkupM ()) (LocalMarkupT m) where
-  deploy Image link =
-    return $ H.img H.! A.src (H.toValue link)
+-- Local
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy Image (Path b t) (HI.MarkupM ()) (LocalMarkupT m) where
-  deploy Image i = do
+instance Deploy Image Locally T.Text (HI.MarkupM ()) where
+  deploy Image Locally link = linkedImageBlaze link
+
+instance ( MonadUrl Abs t (GroundedUrlT HI.MarkupM)
+         ) => Deploy Image Locally (Path Abs t) (GroundedUrlT HI.MarkupM ()) where
+  deploy Image Locally i = do
     link <- pathUrl i
-    return $ H.img H.! A.src (H.toValue link)
+    lift (linkedImageBlaze (T.pack link))
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy Image (Location b t) (HI.MarkupM ()) (LocalMarkupT m) where
-  deploy Image i = do
+instance ( MonadUrl Rel t (RelativeUrlT HI.MarkupM)
+         ) => Deploy Image Locally (Path Rel t) (RelativeUrlT HI.MarkupM ()) where
+  deploy Image Locally i = do
+    link <- pathUrl i
+    lift (linkedImageBlaze (T.pack link))
+
+instance ( MonadUrl Abs t (GroundedUrlT HI.MarkupM)
+         ) => Deploy Image Locally (Location Abs t) (GroundedUrlT HI.MarkupM ()) where
+  deploy Image Locally i = do
     link <- locUrl i
-    return $ H.img H.! A.src (H.toValue link)
+    lift (linkedImageBlaze (T.pack link))
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         , ToLocation s b t
-         ) => Deploy Image s (HI.MarkupM ()) (LocalMarkupT m) where
-  deploy Image i = do
-    link <- symbolUrl i
-    return $ H.img H.! A.src (H.toValue link)
+instance ( MonadUrl Rel t (RelativeUrlT HI.MarkupM)
+         ) => Deploy Image Locally (Location Rel t) (RelativeUrlT HI.MarkupM ()) where
+  deploy Image Locally i = do
+    link <- locUrl i
+    lift (linkedImageBlaze (T.pack link))
 
 
 -- JavaScript
 
-instance ( Monad m
-         ) => Deploy JavaScript T.Text (LBase.HtmlT m ()) (InlineMarkupT m) where
-  deploy JavaScript i =
-    return $ L.script_ [] i
+-- Remote
+
+linkedJavaScriptLucid :: Monad m => T.Text -> L.HtmlT m ()
+linkedJavaScriptLucid link =
+  L.script_ [L.src_ link] ("" :: T.Text)
 
 instance ( Monad m
-         ) => Deploy JavaScript LT.Text (LBase.HtmlT m ()) (InlineMarkupT m) where
-  deploy JavaScript i =
-    return $ L.script_ [] i
+         ) => Deploy JavaScript Remote T.Text (L.HtmlT m ()) where
+  deploy JavaScript Remote link = linkedJavaScriptLucid link
 
 instance ( Monad m
-         ) => Deploy JavaScript T.Text (LBase.HtmlT m ()) (HostedMarkupT m) where
-  deploy JavaScript link =
-    return $ L.script_ [L.src_ link] ("" :: T.Text)
+         , MonadUrl Abs t (AbsoluteUrlT m)
+         ) => Deploy JavaScript Remote (Path Abs t) (L.HtmlT (AbsoluteUrlT m) ()) where
+  deploy JavaScript Remote i = do
+    link <- lift (pathUrl i)
+    linkedJavaScriptLucid (T.pack link)
 
 instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy JavaScript (Path b t) (LBase.HtmlT m ()) (HostedMarkupT m) where
-  deploy JavaScript i = do
-    link <- pathUrl i
-    return $ L.script_ [L.src_ (T.pack link)] ("" :: T.Text)
+         , MonadUrl Abs t (AbsoluteUrlT m)
+         ) => Deploy JavaScript Remote (Location Abs t) (L.HtmlT (AbsoluteUrlT m) ()) where
+  deploy JavaScript Remote i = do
+    link <- lift (locUrl i)
+    linkedJavaScriptLucid (T.pack link)
+
+
+-- Local
 
 instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy JavaScript (Location b t) (LBase.HtmlT m ()) (HostedMarkupT m) where
-  deploy JavaScript i = do
-    link <- locUrl i
-    return $ L.script_ [L.src_ (T.pack link)] ("" :: T.Text)
+         ) => Deploy JavaScript Locally T.Text (L.HtmlT m ()) where
+  deploy JavaScript Locally link = linkedJavaScriptLucid link
 
 instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         , ToLocation s b t
-         ) => Deploy JavaScript s (LBase.HtmlT m ()) (HostedMarkupT m) where
-  deploy JavaScript i = do
-    link <- symbolUrl i
-    return $ L.script_ [L.src_ (T.pack link)] ("" :: T.Text)
+         , MonadUrl Abs t (GroundedUrlT m)
+         ) => Deploy JavaScript Locally (Path Abs t) (L.HtmlT (GroundedUrlT m) ()) where
+  deploy JavaScript Locally i = do
+    link <- lift (pathUrl i)
+    linkedJavaScriptLucid (T.pack link)
 
 instance ( Monad m
-         ) => Deploy JavaScript T.Text (LBase.HtmlT m ()) (LocalMarkupT m) where
-  deploy JavaScript link =
-    return $ L.script_ [L.src_ link] ("" :: T.Text)
+         , MonadUrl Rel t (RelativeUrlT m)
+         ) => Deploy JavaScript Locally (Path Rel t) (L.HtmlT (RelativeUrlT m) ()) where
+  deploy JavaScript Locally i = do
+    link <- lift (pathUrl i)
+    linkedJavaScriptLucid (T.pack link)
 
 instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy JavaScript (Path b t) (LBase.HtmlT m ()) (LocalMarkupT m) where
-  deploy JavaScript i = do
-    link <- pathUrl i
-    return $ L.script_ [L.src_ (T.pack link)] ("" :: T.Text)
+         , MonadUrl Abs t (GroundedUrlT m)
+         ) => Deploy JavaScript Locally (Location Abs t) (L.HtmlT (GroundedUrlT m) ()) where
+  deploy JavaScript Locally i = do
+    link <- lift (locUrl i)
+    linkedJavaScriptLucid (T.pack link)
 
 instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy JavaScript (Location b t) (LBase.HtmlT m ()) (LocalMarkupT m) where
-  deploy JavaScript i = do
-    link <- locUrl i
-    return $ L.script_ [L.src_ (T.pack link)] ("" :: T.Text)
+         , MonadUrl Rel t (RelativeUrlT m)
+         ) => Deploy JavaScript Locally (Location Rel t) (L.HtmlT (RelativeUrlT m) ()) where
+  deploy JavaScript Locally i = do
+    link <- lift (locUrl i)
+    linkedJavaScriptLucid (T.pack link)
+
+-- Inline
 
 instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         , ToLocation s b t
-         ) => Deploy JavaScript s (LBase.HtmlT m ()) (LocalMarkupT m) where
-  deploy JavaScript i = do
-    link <- symbolUrl i
-    return $ L.script_ [L.src_ (T.pack link)] ("" :: T.Text)
+         ) => Deploy JavaScript Inline T.Text (L.HtmlT m ()) where
+  deploy JavaScript Inline i =
+    L.script_ [] i
+
+instance ( Monad m
+         ) => Deploy JavaScript Inline LT.Text (L.HtmlT m ()) where
+  deploy JavaScript Inline i =
+    L.script_ [] i
+
 
 -- Blaze
 
-instance ( Monad m
-         ) => Deploy JavaScript T.Text (HI.MarkupM ()) (InlineMarkupT m) where
-  deploy JavaScript i =
-    return $ H.script (H.toMarkup i)
+-- Remote
 
-instance ( Monad m
-         ) => Deploy JavaScript LT.Text (HI.MarkupM ()) (InlineMarkupT m) where
-  deploy JavaScript i =
-    return $ H.script (H.toMarkup i)
+linkedJavaScriptBlaze :: T.Text -> HI.MarkupM ()
+linkedJavaScriptBlaze link =
+  H.script (H.toHtml ("" :: T.Text)) H.! (A.src $ H.toValue link)
 
-instance ( Monad m
-         ) => Deploy JavaScript T.Text (HI.MarkupM ()) (HostedMarkupT m) where
-  deploy JavaScript i =
-    return $ (H.script H.! A.src (H.toValue i)) HI.Empty
+instance Deploy JavaScript Remote T.Text (HI.MarkupM ()) where
+  deploy JavaScript Remote link = linkedJavaScriptBlaze link
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy JavaScript (Path b t) (HI.MarkupM ()) (HostedMarkupT m) where
-  deploy JavaScript i = do
+instance ( MonadUrl Abs t (AbsoluteUrlT HI.MarkupM)
+         ) => Deploy JavaScript Remote (Path Abs t) (AbsoluteUrlT HI.MarkupM ()) where
+  deploy JavaScript Remote i = do
     link <- pathUrl i
-    return $ (H.script H.! A.src (H.toValue link)) HI.Empty
+    lift (linkedJavaScriptBlaze (T.pack link))
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy JavaScript (Location b t) (HI.MarkupM ()) (HostedMarkupT m) where
-  deploy JavaScript i = do
+instance ( MonadUrl Abs t (AbsoluteUrlT HI.MarkupM)
+         ) => Deploy JavaScript Remote (Location Abs t) (AbsoluteUrlT HI.MarkupM ()) where
+  deploy JavaScript Remote i = do
     link <- locUrl i
-    return $ (H.script H.! A.src (H.toValue link)) HI.Empty
+    lift (linkedJavaScriptBlaze (T.pack link))
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         , ToLocation s b t
-         ) => Deploy JavaScript s (HI.MarkupM ()) (HostedMarkupT m) where
-  deploy JavaScript i = do
-    link <- symbolUrl i
-    return $ (H.script H.! A.src (H.toValue link)) HI.Empty
 
-instance ( Monad m
-         ) => Deploy JavaScript T.Text (HI.MarkupM ()) (LocalMarkupT m) where
-  deploy JavaScript i =
-    return $ (H.script H.! A.src (H.toValue i)) HI.Empty
+-- Local
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy JavaScript (Path b t) (HI.MarkupM ()) (LocalMarkupT m) where
-  deploy JavaScript i = do
+instance Deploy JavaScript Locally T.Text (HI.MarkupM ()) where
+  deploy JavaScript Locally link = linkedJavaScriptBlaze link
+
+instance ( MonadUrl Abs t (GroundedUrlT HI.MarkupM)
+         ) => Deploy JavaScript Locally (Path Abs t) (GroundedUrlT HI.MarkupM ()) where
+  deploy JavaScript Locally i = do
     link <- pathUrl i
-    return $ (H.script H.! A.src (H.toValue link)) HI.Empty
+    lift (linkedJavaScriptBlaze (T.pack link))
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy JavaScript (Location b t) (HI.MarkupM ()) (LocalMarkupT m) where
-  deploy JavaScript i = do
-    link <- locUrl i
-    return $ (H.script H.! A.src (H.toValue link)) HI.Empty
-
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         , ToLocation s b t
-         ) => Deploy JavaScript s (HI.MarkupM ()) (LocalMarkupT m) where
-  deploy JavaScript i = do
-    link <- symbolUrl i
-    return $ (H.script H.! A.src (H.toValue link)) HI.Empty
-
-
--- Css instances
-
-instance ( Monad m
-         ) => Deploy Css T.Text (LBase.HtmlT m ()) (InlineMarkupT m) where
-  deploy Css link =
-    return $ L.style_ [] link
-
-instance ( Monad m
-         ) => Deploy Css LT.Text (LBase.HtmlT m ()) (InlineMarkupT m) where
-  deploy Css link =
-    return $ L.style_ [] link
-
-instance ( Monad m
-         ) => Deploy Css T.Text (LBase.HtmlT m ()) (HostedMarkupT m) where
-  deploy Css link =
-    return $ L.link_ [ L.rel_ "stylesheet"
-                     , L.type_ "text/css"
-                     , L.href_ link
-                     ]
-
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy Css (Path b t) (LBase.HtmlT m ()) (HostedMarkupT m) where
-  deploy Css i = do
+instance ( MonadUrl Rel t (RelativeUrlT HI.MarkupM)
+         ) => Deploy JavaScript Locally (Path Rel t) (RelativeUrlT HI.MarkupM ()) where
+  deploy JavaScript Locally i = do
     link <- pathUrl i
-    return $ L.link_ [ L.rel_ "stylesheet"
-                     , L.type_ "text/css"
-                     , L.href_ (T.pack link)
-                     ]
+    lift (linkedJavaScriptBlaze (T.pack link))
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy Css (Location b t) (LBase.HtmlT m ()) (HostedMarkupT m) where
-  deploy Css i = do
+instance ( MonadUrl Abs t (GroundedUrlT HI.MarkupM)
+         ) => Deploy JavaScript Locally (Location Abs t) (GroundedUrlT HI.MarkupM ()) where
+  deploy JavaScript Locally i = do
     link <- locUrl i
-    return $ L.link_ [ L.rel_ "stylesheet"
-                     , L.type_ "text/css"
-                     , L.href_ (T.pack link)
-                     ]
+    lift (linkedJavaScriptBlaze (T.pack link))
+
+instance ( MonadUrl Rel t (RelativeUrlT HI.MarkupM)
+         ) => Deploy JavaScript Locally (Location Rel t) (RelativeUrlT HI.MarkupM ()) where
+  deploy JavaScript Locally i = do
+    link <- locUrl i
+    lift (linkedJavaScriptBlaze (T.pack link))
+
+-- Inline
+
+instance Deploy JavaScript Inline T.Text (HI.MarkupM ()) where
+  deploy JavaScript Inline i =
+    H.script (H.toHtml i)
+
+instance Deploy JavaScript Inline LT.Text (HI.MarkupM ()) where
+  deploy JavaScript Inline i =
+    H.script (H.toHtml i)
+
+
+-- Css
+
+-- Remote
+
+linkedCssLucid :: Monad m => T.Text -> L.HtmlT m ()
+linkedCssLucid link =
+  L.link_ [ L.rel_ "stylesheet"
+          , L.type_ "text/css"
+          , L.href_ link
+          ]
 
 instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         , ToLocation s b t
-         ) => Deploy Css s (LBase.HtmlT m ()) (HostedMarkupT m) where
-  deploy Css i = do
-    link <- symbolUrl i
-    return $ L.link_ [ L.rel_ "stylesheet"
-                     , L.type_ "text/css"
-                     , L.href_ (T.pack link)
-                     ]
+         ) => Deploy Css Remote T.Text (L.HtmlT m ()) where
+  deploy Css Remote link = linkedCssLucid link
 
 instance ( Monad m
-         ) => Deploy Css T.Text (LBase.HtmlT m ()) (LocalMarkupT m) where
-  deploy Css link =
-    return $ L.link_ [ L.rel_ "stylesheet"
-                     , L.type_ "text/css"
-                     , L.href_ link
-                     ]
+         , MonadUrl Abs t (AbsoluteUrlT m)
+         ) => Deploy Css Remote (Path Abs t) (L.HtmlT (AbsoluteUrlT m) ()) where
+  deploy Css Remote i = do
+    link <- lift (pathUrl i)
+    linkedCssLucid (T.pack link)
 
 instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy Css (Path b t) (LBase.HtmlT m ()) (LocalMarkupT m) where
-  deploy Css i = do
+         , MonadUrl Abs t (AbsoluteUrlT m)
+         ) => Deploy Css Remote (Location Abs t) (L.HtmlT (AbsoluteUrlT m) ()) where
+  deploy Css Remote i = do
+    link <- lift (locUrl i)
+    linkedCssLucid (T.pack link)
+
+
+-- Local
+
+instance ( Monad m
+         ) => Deploy Css Locally T.Text (L.HtmlT m ()) where
+  deploy Css Locally link = linkedCssLucid link
+
+instance ( Monad m
+         , MonadUrl Abs t (GroundedUrlT m)
+         ) => Deploy Css Locally (Path Abs t) (L.HtmlT (GroundedUrlT m) ()) where
+  deploy Css Locally i = do
+    link <- lift (pathUrl i)
+    linkedCssLucid (T.pack link)
+
+instance ( Monad m
+         , MonadUrl Rel t (RelativeUrlT m)
+         ) => Deploy Css Locally (Path Rel t) (L.HtmlT (RelativeUrlT m) ()) where
+  deploy Css Locally i = do
+    link <- lift (pathUrl i)
+    linkedCssLucid (T.pack link)
+
+instance ( Monad m
+         , MonadUrl Abs t (GroundedUrlT m)
+         ) => Deploy Css Locally (Location Abs t) (L.HtmlT (GroundedUrlT m) ()) where
+  deploy Css Locally i = do
+    link <- lift (locUrl i)
+    linkedCssLucid (T.pack link)
+
+instance ( Monad m
+         , MonadUrl Rel t (RelativeUrlT m)
+         ) => Deploy Css Locally (Location Rel t) (L.HtmlT (RelativeUrlT m) ()) where
+  deploy Css Locally i = do
+    link <- lift (locUrl i)
+    linkedCssLucid (T.pack link)
+
+-- Inline
+
+instance ( Monad m
+         ) => Deploy Css Inline T.Text (L.HtmlT m ()) where
+  deploy Css Inline i =
+    L.style_ [] i
+
+instance ( Monad m
+         ) => Deploy Css Inline LT.Text (L.HtmlT m ()) where
+  deploy Css Inline i =
+    L.style_ [] i
+
+instance ( Monad m
+         ) => Deploy Css Inline C.Css (L.HtmlT m ()) where
+  deploy Css Inline i =
+    L.style_ [] (C.render i)
+
+
+-- Blaze
+
+-- Remote
+
+linkedCssBlaze :: T.Text -> HI.MarkupM ()
+linkedCssBlaze link =
+  H.link H.! A.rel "stylesheet"
+         H.! A.type_ "text/css"
+         H.! A.href (H.toValue link)
+
+instance Deploy Css Remote T.Text (HI.MarkupM ()) where
+  deploy Css Remote link = linkedCssBlaze link
+
+instance ( MonadUrl Abs t (AbsoluteUrlT HI.MarkupM)
+         ) => Deploy Css Remote (Path Abs t) (AbsoluteUrlT HI.MarkupM ()) where
+  deploy Css Remote i = do
     link <- pathUrl i
-    return $ L.link_ [ L.rel_ "stylesheet"
-                     , L.type_ "text/css"
-                     , L.href_ (T.pack link)
-                     ]
+    lift (linkedCssBlaze (T.pack link))
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy Css (Location b t) (LBase.HtmlT m ()) (LocalMarkupT m) where
-  deploy Css i = do
+instance ( MonadUrl Abs t (AbsoluteUrlT HI.MarkupM)
+         ) => Deploy Css Remote (Location Abs t) (AbsoluteUrlT HI.MarkupM ()) where
+  deploy Css Remote i = do
     link <- locUrl i
-    return $ L.link_ [ L.rel_ "stylesheet"
-                     , L.type_ "text/css"
-                     , L.href_ (T.pack link)
-                     ]
+    lift (linkedCssBlaze (T.pack link))
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         , ToLocation s b t
-         ) => Deploy Css s (LBase.HtmlT m ()) (LocalMarkupT m) where
-  deploy Css i = do
-    link <- symbolUrl i
-    return $ L.link_ [ L.rel_ "stylesheet"
-                     , L.type_ "text/css"
-                     , L.href_ (T.pack link)
-                     ]
 
-instance ( Monad m
-         ) => Deploy Css T.Text (HI.MarkupM ()) (InlineMarkupT m) where
-  deploy Css i =
-    return $ H.style (H.toMarkup i)
+-- Local
 
-instance ( Monad m
-         ) => Deploy Css LT.Text (HI.MarkupM ()) (InlineMarkupT m) where
-  deploy Css i =
-    return $ H.style (H.toMarkup i)
+instance Deploy Css Locally T.Text (HI.MarkupM ()) where
+  deploy Css Locally link = linkedCssBlaze link
 
-instance ( Monad m
-         ) => Deploy Css T.Text (HI.MarkupM ()) (HostedMarkupT m) where
-  deploy Css i = return $
-    H.link H.! A.rel "stylesheet"
-           H.! A.type_ "text/css"
-           H.! A.href (H.toValue i)
-
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy Css (Path b t) (HI.MarkupM ()) (HostedMarkupT m) where
-  deploy Css i = do
+instance ( MonadUrl Abs t (GroundedUrlT HI.MarkupM)
+         ) => Deploy Css Locally (Path Abs t) (GroundedUrlT HI.MarkupM ()) where
+  deploy Css Locally i = do
     link <- pathUrl i
-    return $ H.link H.! A.rel "stylesheet"
-                    H.! A.type_ "text/css"
-                    H.! A.href (H.toValue link)
+    lift (linkedCssBlaze (T.pack link))
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy Css (Location b t) (HI.MarkupM ()) (HostedMarkupT m) where
-  deploy Css i = do
-    link <- locUrl i
-    return $ H.link H.! A.rel "stylesheet"
-                    H.! A.type_ "text/css"
-                    H.! A.href (H.toValue link)
-
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         , ToLocation s b t
-         ) => Deploy Css s (HI.MarkupM ()) (HostedMarkupT m) where
-  deploy Css i = do
-    link <- symbolUrl i
-    return $ H.link H.! A.rel "stylesheet"
-                    H.! A.type_ "text/css"
-                    H.! A.href (H.toValue link)
-
-instance ( Monad m
-         ) => Deploy Css T.Text (HI.MarkupM ()) (LocalMarkupT m) where
-  deploy Css i = return $
-    H.link H.! A.rel "stylesheet"
-           H.! A.type_ "text/css"
-           H.! A.href (H.toValue i)
-
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy Css (Path b t) (HI.MarkupM ()) (LocalMarkupT m) where
-  deploy Css i = do
+instance ( MonadUrl Rel t (RelativeUrlT HI.MarkupM)
+         ) => Deploy Css Locally (Path Rel t) (RelativeUrlT HI.MarkupM ()) where
+  deploy Css Locally i = do
     link <- pathUrl i
-    return $ H.link H.! A.rel "stylesheet"
-                    H.! A.type_ "text/css"
-                    H.! A.href (H.toValue link)
+    lift (linkedCssBlaze (T.pack link))
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy Css (Location b t) (HI.MarkupM ()) (LocalMarkupT m) where
-  deploy Css i = do
+instance ( MonadUrl Abs t (GroundedUrlT HI.MarkupM)
+         ) => Deploy Css Locally (Location Abs t) (GroundedUrlT HI.MarkupM ()) where
+  deploy Css Locally i = do
     link <- locUrl i
-    return $ H.link H.! A.rel "stylesheet"
-                    H.! A.type_ "text/css"
-                    H.! A.href (H.toValue link)
+    lift (linkedCssBlaze (T.pack link))
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         , ToLocation s b t
-         ) => Deploy Css s (HI.MarkupM ()) (LocalMarkupT m) where
-  deploy Css i = do
-    link <- symbolUrl i
-    return $ H.link H.! A.rel "stylesheet"
-                    H.! A.type_ "text/css"
-                    H.! A.href (H.toValue link)
+instance ( MonadUrl Rel t (RelativeUrlT HI.MarkupM)
+         ) => Deploy Css Locally (Location Rel t) (RelativeUrlT HI.MarkupM ()) where
+  deploy Css Locally i = do
+    link <- locUrl i
+    lift (linkedCssBlaze (T.pack link))
+
+-- Inline
+
+instance Deploy Css Inline T.Text (HI.MarkupM ()) where
+  deploy Css Inline i =
+    H.style (H.toHtml i)
+
+instance Deploy Css Inline LT.Text (HI.MarkupM ()) where
+  deploy Css Inline i =
+    H.style (H.toHtml i)
+
+instance Deploy Css Inline C.Css (HI.MarkupM ()) where
+  deploy Css Inline i =
+    H.style (H.toHtml (C.render i))
 
 
 -- WebComponent instances
 
-instance ( Monad m
-         ) => Deploy WebComponent T.Text (LBase.HtmlT m ()) (HostedMarkupT m) where
-  deploy WebComponent link =
-    return $ L.link_ [ L.rel_ "import"
-                     , L.href_ link
-                     ]
+-- Remote
+
+linkedWebComponentLucid :: Monad m => T.Text -> L.HtmlT m ()
+linkedWebComponentLucid link =
+  L.link_ [ L.rel_ "import"
+          , L.href_ link
+          ]
 
 instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy WebComponent (Path b t) (LBase.HtmlT m ()) (HostedMarkupT m) where
-  deploy WebComponent i = do
-    link <- pathUrl i
-    return $ L.link_ [ L.rel_ "import"
-                     , L.href_ (T.pack link)
-                     ]
+         ) => Deploy WebComponent Remote T.Text (L.HtmlT m ()) where
+  deploy WebComponent Remote link = linkedWebComponentLucid link
 
 instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy WebComponent (Location b t) (LBase.HtmlT m ()) (HostedMarkupT m) where
-  deploy WebComponent i = do
-    link <- locUrl i
-    return $ L.link_ [ L.rel_ "import"
-                     , L.href_ (T.pack link)
-                     ]
+         , MonadUrl Abs t (AbsoluteUrlT m)
+         ) => Deploy WebComponent Remote (Path Abs t) (L.HtmlT (AbsoluteUrlT m) ()) where
+  deploy WebComponent Remote i = do
+    link <- lift (pathUrl i)
+    linkedWebComponentLucid (T.pack link)
 
 instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         , ToLocation s b t
-         ) => Deploy WebComponent s (LBase.HtmlT m ()) (HostedMarkupT m) where
-  deploy WebComponent i = do
-    link <- symbolUrl i
-    return $ L.link_ [ L.rel_ "import"
-                     , L.href_ (T.pack link)
-                     ]
+         , MonadUrl Abs t (AbsoluteUrlT m)
+         ) => Deploy WebComponent Remote (Location Abs t) (L.HtmlT (AbsoluteUrlT m) ()) where
+  deploy WebComponent Remote i = do
+    link <- lift (locUrl i)
+    linkedWebComponentLucid (T.pack link)
+
+-- instance ( Monad m
+--          , MonadUrl Abs t (AbsoluteUrlT m)
+--          , MonadThrow (AbsoluteUrlT m)
+--          , ToLocation s Abs t
+--          ) => Deploy WebComponent s (L.HtmlT (AbsoluteUrlT m) ()) where
+--   deploy WebComponent Remote i = do
+--     i' <- lift (toLocation i)
+--     link <- lift (locUrl i')
+--     linkedWebComponentLucid (T.pack link)
+
+
+-- Local
 
 instance ( Monad m
-         ) => Deploy WebComponent T.Text (LBase.HtmlT m ()) (LocalMarkupT m) where
-  deploy WebComponent link =
-    return $ L.link_ [ L.rel_ "import"
-                     , L.href_ link
-                     ]
+         ) => Deploy WebComponent Locally T.Text (L.HtmlT m ()) where
+  deploy WebComponent Locally link = linkedWebComponentLucid link
 
 instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy WebComponent (Path b t) (LBase.HtmlT m ()) (LocalMarkupT m) where
-  deploy WebComponent i = do
-    link <- pathUrl i
-    return $ do L.link_ [ L.rel_ "import"
-                        , L.href_ (T.pack link)
-                        ]
+         , MonadUrl Abs t (GroundedUrlT m)
+         ) => Deploy WebComponent Locally (Path Abs t) (L.HtmlT (GroundedUrlT m) ()) where
+  deploy WebComponent Locally i = do
+    link <- lift (pathUrl i)
+    linkedWebComponentLucid (T.pack link)
 
 instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy WebComponent (Location b t) (LBase.HtmlT m ()) (LocalMarkupT m) where
-  deploy WebComponent i = do
-    link <- locUrl i
-    return $ do L.link_ [ L.rel_ "import"
-                        , L.href_ (T.pack link)
-                        ]
+         , MonadUrl Rel t (RelativeUrlT m)
+         ) => Deploy WebComponent Locally (Path Rel t) (L.HtmlT (RelativeUrlT m) ()) where
+  deploy WebComponent Locally i = do
+    link <- lift (pathUrl i)
+    linkedWebComponentLucid (T.pack link)
 
 instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         , ToLocation s b t
-         ) => Deploy WebComponent s (LBase.HtmlT m ()) (LocalMarkupT m) where
-  deploy WebComponent i = do
-    link <- symbolUrl i
-    return $ do L.link_ [ L.rel_ "import"
-                        , L.href_ (T.pack link)
-                        ]
+         , MonadUrl Abs t (GroundedUrlT m)
+         ) => Deploy WebComponent Locally (Location Abs t) (L.HtmlT (GroundedUrlT m) ()) where
+  deploy WebComponent Locally i = do
+    link <- lift (locUrl i)
+    linkedWebComponentLucid (T.pack link)
 
+instance ( Monad m
+         , MonadUrl Rel t (RelativeUrlT m)
+         ) => Deploy WebComponent Locally (Location Rel t) (L.HtmlT (RelativeUrlT m) ()) where
+  deploy WebComponent Locally i = do
+    link <- lift (locUrl i)
+    linkedWebComponentLucid (T.pack link)
+
+-- instance ( Monad m
+--          , MonadUrl Abs t (GroundedUrlT m)
+--          , MonadThrow (GroundedUrlT m)
+--          , ToLocation s Abs t
+--          ) => Deploy WebComponent Locally s (L.HtmlT (GroundedUrlT m) ()) where
+--   deploy WebComponent Locally i = do
+--     i' <- lift (toLocation i)
+--     link <- lift (locUrl i')
+--     linkedWebComponentLucid (T.pack link)
+--
+-- instance ( Monad m
+--          , MonadUrl Rel t (RelativeUrlT m)
+--          , MonadThrow (RelativeUrlT m)
+--          , ToLocation s Rel t
+--          ) => Deploy WebComponent Locally s (L.HtmlT (RelativeUrlT m) ()) where
+--   deploy WebComponent Locally i = do
+--     i' <- lift (toLocation i)
+--     link <- lift (locUrl i')
+--     linkedWebComponentLucid (T.pack link)
 
 -- Blaze
 
-instance ( Monad m
-         ) => Deploy WebComponent T.Text (HI.MarkupM ()) (HostedMarkupT m) where
-  deploy WebComponent i =
-    return $ H.link H.! A.rel "import"
-                    H.! A.href (H.toValue i)
+-- Remote
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy WebComponent (Path b t) (HI.MarkupM ()) (HostedMarkupT m) where
-  deploy WebComponent i = do
+linkedWebComponentBlaze :: T.Text -> HI.MarkupM ()
+linkedWebComponentBlaze link =
+  H.link H.! A.rel "import"
+         H.! A.href (H.toValue link)
+
+instance Deploy WebComponent Remote T.Text (HI.MarkupM ()) where
+  deploy WebComponent Remote link = linkedWebComponentBlaze link
+
+instance ( MonadUrl Abs t (AbsoluteUrlT HI.MarkupM)
+         ) => Deploy WebComponent Remote (Path Abs t) (AbsoluteUrlT HI.MarkupM ()) where
+  deploy WebComponent Remote i = do
     link <- pathUrl i
-    return $ H.link H.! A.rel "import"
-                    H.! A.href (H.toValue link)
+    lift (linkedWebComponentBlaze (T.pack link))
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy WebComponent (Location b t) (HI.MarkupM ()) (HostedMarkupT m) where
-  deploy WebComponent i = do
+instance ( MonadUrl Abs t (AbsoluteUrlT HI.MarkupM)
+         ) => Deploy WebComponent Remote (Location Abs t) (AbsoluteUrlT HI.MarkupM ()) where
+  deploy WebComponent Remote i = do
     link <- locUrl i
-    return $ H.link H.! A.rel "import"
-                    H.! A.href (H.toValue link)
+    lift (linkedWebComponentBlaze (T.pack link))
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         , ToLocation s b t
-         ) => Deploy WebComponent s (HI.MarkupM ()) (HostedMarkupT m) where
-  deploy WebComponent i = do
-    link <- symbolUrl i
-    return $ H.link H.! A.rel "import"
-                    H.! A.href (H.toValue link)
 
-instance ( Monad m
-         ) => Deploy WebComponent T.Text (HI.MarkupM ()) (LocalMarkupT m) where
-  deploy WebComponent i =
-    return $ H.link H.! A.rel "import"
-                    H.! A.href (H.toValue i)
+-- Local
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy WebComponent (Path b t) (HI.MarkupM ()) (LocalMarkupT m) where
-  deploy WebComponent i = do
+instance Deploy WebComponent Locally T.Text (HI.MarkupM ()) where
+  deploy WebComponent Locally link = linkedWebComponentBlaze link
+
+instance ( MonadUrl Abs t (GroundedUrlT HI.MarkupM)
+         ) => Deploy WebComponent Locally (Path Abs t) (GroundedUrlT HI.MarkupM ()) where
+  deploy WebComponent Locally i = do
     link <- pathUrl i
-    return $ H.link H.! A.rel "import"
-                    H.! A.href (H.toValue link)
+    lift (linkedWebComponentBlaze (T.pack link))
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         ) => Deploy WebComponent (Location b t) (HI.MarkupM ()) (LocalMarkupT m) where
-  deploy WebComponent i = do
+instance ( MonadUrl Rel t (RelativeUrlT HI.MarkupM)
+         ) => Deploy WebComponent Locally (Path Rel t) (RelativeUrlT HI.MarkupM ()) where
+  deploy WebComponent Locally i = do
+    link <- pathUrl i
+    lift (linkedWebComponentBlaze (T.pack link))
+
+instance ( MonadUrl Abs t (GroundedUrlT HI.MarkupM)
+         ) => Deploy WebComponent Locally (Location Abs t) (GroundedUrlT HI.MarkupM ()) where
+  deploy WebComponent Locally i = do
     link <- locUrl i
-    return $ H.link H.! A.rel "import"
-                    H.! A.href (H.toValue link)
+    lift (linkedWebComponentBlaze (T.pack link))
 
-instance ( Monad m
-         , MonadUrl b m
-         , MonadThrow m
-         , ToLocation s b t
-         ) => Deploy WebComponent s (HI.MarkupM ()) (LocalMarkupT m) where
-  deploy WebComponent i = do
-    link <- symbolUrl i
-    return $ H.link H.! A.rel "import"
-                    H.! A.href (H.toValue link)
+instance ( MonadUrl Rel t (RelativeUrlT HI.MarkupM)
+         ) => Deploy WebComponent Locally (Location Rel t) (RelativeUrlT HI.MarkupM ()) where
+  deploy WebComponent Locally i = do
+    link <- locUrl i
+    lift (linkedWebComponentBlaze (T.pack link))
+
