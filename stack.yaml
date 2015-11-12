@@ -8,13 +8,13 @@ packages:
 - '.'
 - location:
     git: https://github.com/athanclark/urlpath
-    commit: 0e0970cdae04c6250dce65822fbfdb3301a71b37
+    commit: 6fbd422860d16e5335272689208602cc2a2385fd
   extra-dep: true
 
 # Packages to be pulled from upstream that are not in the resolver (e.g., acme-missiles-0.3)
 extra-deps:
   - path-extra-0.0.2
-  - urlpath-4.0.0
+  - urlpath-4.1.0
 
 # Override default flag values for local packages and extra-deps
 flags: {}

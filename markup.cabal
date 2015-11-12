@@ -45,7 +45,7 @@ Library
                       , resourcet
                       , text
                       , transformers-base
-                      , urlpath >= 4.0.0.1
+                      , urlpath >= 4.1.0
 
 Source-Repository head
   Type:                 git
