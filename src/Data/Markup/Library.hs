@@ -7,6 +7,18 @@
   , MultiParamTypeClasses
   #-}
 
+-- |
+-- Module      :  Data.Markup.Library
+-- Copyright   :  (c) Athan L. Clark
+-- License     :  MIT
+--
+-- Maintainer  :  Athan L. Clark <athan.clark@gmail.com>
+-- Stability   :  experimental
+-- Portability :  GHC
+--
+-- This module enumerates the expected behavior for each type of asset to be
+-- deployed.
+
 module Data.Markup.Library where
 
 import           Data.Markup.Class
