@@ -19,9 +19,9 @@ Description:
   markup. The three deployment mechanisms provided include
   .
     * /inline/ - the asset inserted between markup tags
-
+  .
     * /local/ - assets on the current server
-  
+  .
     * /remote/ - assets referenced with a complete URI
 
 Cabal-Version:          >= 1.10
