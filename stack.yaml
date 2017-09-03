@@ -10,7 +10,7 @@ packages:
 # Packages to be pulled from upstream that are not in the resolver (e.g., acme-missiles-0.3)
 extra-deps:
   - path-extra-0.0.5
-  - urlpath-6.0.0
+  - urlpath-6.0.1
   - attoparsec-uri-0.0.1
   - n-tuple-0.0.1.1
 
