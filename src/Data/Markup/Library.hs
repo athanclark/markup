@@ -61,14 +61,14 @@ instance ( Monad m
          ) => Deploy Image Remote (Path Abs t) (L.HtmlT (AbsoluteUrlT m)) where
   deploy Image Remote i = do
     link <- lift (pathUrl i)
-    linkedImageLucid (T.pack link)
+    linkedImageLucid (T.pack $ show link)
 
 instance ( Monad m
          , MonadUrl Abs t (AbsoluteUrlT m)
          ) => Deploy Image Remote (Location Abs t) (L.HtmlT (AbsoluteUrlT m)) where
   deploy Image Remote i = do
     link <- lift (locUrl i)
-    linkedImageLucid (T.pack link)
+    linkedImageLucid (T.pack $ show link)
 
 
 -- Local
@@ -82,28 +82,28 @@ instance ( Monad m
          ) => Deploy Image Locally (Path Abs t) (L.HtmlT (GroundedUrlT m)) where
   deploy Image Locally i = do
     link <- lift (pathUrl i)
-    linkedImageLucid (T.pack link)
+    linkedImageLucid (T.pack $ show link)
 
 instance ( Monad m
          , MonadUrl Rel t (RelativeUrlT m)
          ) => Deploy Image Locally (Path Rel t) (L.HtmlT (RelativeUrlT m)) where
   deploy Image Locally i = do
     link <- lift (pathUrl i)
-    linkedImageLucid (T.pack link)
+    linkedImageLucid (T.pack $ show link)
 
 instance ( Monad m
          , MonadUrl Abs t (GroundedUrlT m)
          ) => Deploy Image Locally (Location Abs t) (L.HtmlT (GroundedUrlT m)) where
   deploy Image Locally i = do
     link <- lift (locUrl i)
-    linkedImageLucid (T.pack link)
+    linkedImageLucid (T.pack $ show link)
 
 instance ( Monad m
          , MonadUrl Rel t (RelativeUrlT m)
          ) => Deploy Image Locally (Location Rel t) (L.HtmlT (RelativeUrlT m)) where
   deploy Image Locally i = do
     link <- lift (locUrl i)
-    linkedImageLucid (T.pack link)
+    linkedImageLucid (T.pack $ show link)
 
 
 -- Blaze
@@ -121,13 +121,13 @@ instance ( MonadUrl Abs t (AbsoluteUrlT HI.MarkupM)
          ) => Deploy Image Remote (Path Abs t) (AbsoluteUrlT HI.MarkupM) where
   deploy Image Remote i = do
     link <- pathUrl i
-    lift (linkedImageBlaze (T.pack link))
+    lift (linkedImageBlaze (T.pack $ show link))
 
 instance ( MonadUrl Abs t (AbsoluteUrlT HI.MarkupM)
          ) => Deploy Image Remote (Location Abs t) (AbsoluteUrlT HI.MarkupM) where
   deploy Image Remote i = do
     link <- locUrl i
-    lift (linkedImageBlaze (T.pack link))
+    lift (linkedImageBlaze (T.pack $ show link))
 
 
 -- Local
@@ -139,25 +139,25 @@ instance ( MonadUrl Abs t (GroundedUrlT HI.MarkupM)
          ) => Deploy Image Locally (Path Abs t) (GroundedUrlT HI.MarkupM) where
   deploy Image Locally i = do
     link <- pathUrl i
-    lift (linkedImageBlaze (T.pack link))
+    lift (linkedImageBlaze (T.pack $ show link))
 
 instance ( MonadUrl Rel t (RelativeUrlT HI.MarkupM)
          ) => Deploy Image Locally (Path Rel t) (RelativeUrlT HI.MarkupM) where
   deploy Image Locally i = do
     link <- pathUrl i
-    lift (linkedImageBlaze (T.pack link))
+    lift (linkedImageBlaze (T.pack $ show link))
 
 instance ( MonadUrl Abs t (GroundedUrlT HI.MarkupM)
          ) => Deploy Image Locally (Location Abs t) (GroundedUrlT HI.MarkupM) where
   deploy Image Locally i = do
     link <- locUrl i
-    lift (linkedImageBlaze (T.pack link))
+    lift (linkedImageBlaze (T.pack $ show link))
 
 instance ( MonadUrl Rel t (RelativeUrlT HI.MarkupM)
          ) => Deploy Image Locally (Location Rel t) (RelativeUrlT HI.MarkupM) where
   deploy Image Locally i = do
     link <- locUrl i
-    lift (linkedImageBlaze (T.pack link))
+    lift (linkedImageBlaze (T.pack $ show link))
 
 
 -- JavaScript
@@ -177,14 +177,14 @@ instance ( Monad m
          ) => Deploy JavaScript Remote (Path Abs t) (L.HtmlT (AbsoluteUrlT m)) where
   deploy JavaScript Remote i = do
     link <- lift (pathUrl i)
-    linkedJavaScriptLucid (T.pack link)
+    linkedJavaScriptLucid (T.pack $ show link)
 
 instance ( Monad m
          , MonadUrl Abs t (AbsoluteUrlT m)
          ) => Deploy JavaScript Remote (Location Abs t) (L.HtmlT (AbsoluteUrlT m)) where
   deploy JavaScript Remote i = do
     link <- lift (locUrl i)
-    linkedJavaScriptLucid (T.pack link)
+    linkedJavaScriptLucid (T.pack $ show link)
 
 
 -- Local
@@ -198,28 +198,28 @@ instance ( Monad m
          ) => Deploy JavaScript Locally (Path Abs t) (L.HtmlT (GroundedUrlT m)) where
   deploy JavaScript Locally i = do
     link <- lift (pathUrl i)
-    linkedJavaScriptLucid (T.pack link)
+    linkedJavaScriptLucid (T.pack $ show link)
 
 instance ( Monad m
          , MonadUrl Rel t (RelativeUrlT m)
          ) => Deploy JavaScript Locally (Path Rel t) (L.HtmlT (RelativeUrlT m)) where
   deploy JavaScript Locally i = do
     link <- lift (pathUrl i)
-    linkedJavaScriptLucid (T.pack link)
+    linkedJavaScriptLucid (T.pack $ show link)
 
 instance ( Monad m
          , MonadUrl Abs t (GroundedUrlT m)
          ) => Deploy JavaScript Locally (Location Abs t) (L.HtmlT (GroundedUrlT m)) where
   deploy JavaScript Locally i = do
     link <- lift (locUrl i)
-    linkedJavaScriptLucid (T.pack link)
+    linkedJavaScriptLucid (T.pack $ show link)
 
 instance ( Monad m
          , MonadUrl Rel t (RelativeUrlT m)
          ) => Deploy JavaScript Locally (Location Rel t) (L.HtmlT (RelativeUrlT m)) where
   deploy JavaScript Locally i = do
     link <- lift (locUrl i)
-    linkedJavaScriptLucid (T.pack link)
+    linkedJavaScriptLucid (T.pack $ show link)
 
 -- Inline
 
@@ -249,13 +249,13 @@ instance ( MonadUrl Abs t (AbsoluteUrlT HI.MarkupM)
          ) => Deploy JavaScript Remote (Path Abs t) (AbsoluteUrlT HI.MarkupM) where
   deploy JavaScript Remote i = do
     link <- pathUrl i
-    lift (linkedJavaScriptBlaze (T.pack link))
+    lift (linkedJavaScriptBlaze (T.pack $ show link))
 
 instance ( MonadUrl Abs t (AbsoluteUrlT HI.MarkupM)
          ) => Deploy JavaScript Remote (Location Abs t) (AbsoluteUrlT HI.MarkupM) where
   deploy JavaScript Remote i = do
     link <- locUrl i
-    lift (linkedJavaScriptBlaze (T.pack link))
+    lift (linkedJavaScriptBlaze (T.pack $ show link))
 
 
 -- Local
@@ -267,25 +267,25 @@ instance ( MonadUrl Abs t (GroundedUrlT HI.MarkupM)
          ) => Deploy JavaScript Locally (Path Abs t) (GroundedUrlT HI.MarkupM) where
   deploy JavaScript Locally i = do
     link <- pathUrl i
-    lift (linkedJavaScriptBlaze (T.pack link))
+    lift (linkedJavaScriptBlaze (T.pack $ show link))
 
 instance ( MonadUrl Rel t (RelativeUrlT HI.MarkupM)
          ) => Deploy JavaScript Locally (Path Rel t) (RelativeUrlT HI.MarkupM) where
   deploy JavaScript Locally i = do
     link <- pathUrl i
-    lift (linkedJavaScriptBlaze (T.pack link))
+    lift (linkedJavaScriptBlaze (T.pack $ show link))
 
 instance ( MonadUrl Abs t (GroundedUrlT HI.MarkupM)
          ) => Deploy JavaScript Locally (Location Abs t) (GroundedUrlT HI.MarkupM) where
   deploy JavaScript Locally i = do
     link <- locUrl i
-    lift (linkedJavaScriptBlaze (T.pack link))
+    lift (linkedJavaScriptBlaze (T.pack $ show link))
 
 instance ( MonadUrl Rel t (RelativeUrlT HI.MarkupM)
          ) => Deploy JavaScript Locally (Location Rel t) (RelativeUrlT HI.MarkupM) where
   deploy JavaScript Locally i = do
     link <- locUrl i
-    lift (linkedJavaScriptBlaze (T.pack link))
+    lift (linkedJavaScriptBlaze (T.pack $ show link))
 
 -- Inline
 
@@ -318,14 +318,14 @@ instance ( Monad m
          ) => Deploy Css Remote (Path Abs t) (L.HtmlT (AbsoluteUrlT m)) where
   deploy Css Remote i = do
     link <- lift (pathUrl i)
-    linkedCssLucid (T.pack link)
+    linkedCssLucid (T.pack $ show link)
 
 instance ( Monad m
          , MonadUrl Abs t (AbsoluteUrlT m)
          ) => Deploy Css Remote (Location Abs t) (L.HtmlT (AbsoluteUrlT m)) where
   deploy Css Remote i = do
     link <- lift (locUrl i)
-    linkedCssLucid (T.pack link)
+    linkedCssLucid (T.pack $ show link)
 
 
 -- Local
@@ -339,28 +339,28 @@ instance ( Monad m
          ) => Deploy Css Locally (Path Abs t) (L.HtmlT (GroundedUrlT m)) where
   deploy Css Locally i = do
     link <- lift (pathUrl i)
-    linkedCssLucid (T.pack link)
+    linkedCssLucid (T.pack $ show link)
 
 instance ( Monad m
          , MonadUrl Rel t (RelativeUrlT m)
          ) => Deploy Css Locally (Path Rel t) (L.HtmlT (RelativeUrlT m)) where
   deploy Css Locally i = do
     link <- lift (pathUrl i)
-    linkedCssLucid (T.pack link)
+    linkedCssLucid (T.pack $ show link)
 
 instance ( Monad m
          , MonadUrl Abs t (GroundedUrlT m)
          ) => Deploy Css Locally (Location Abs t) (L.HtmlT (GroundedUrlT m)) where
   deploy Css Locally i = do
     link <- lift (locUrl i)
-    linkedCssLucid (T.pack link)
+    linkedCssLucid (T.pack $ show link)
 
 instance ( Monad m
          , MonadUrl Rel t (RelativeUrlT m)
          ) => Deploy Css Locally (Location Rel t) (L.HtmlT (RelativeUrlT m)) where
   deploy Css Locally i = do
     link <- lift (locUrl i)
-    linkedCssLucid (T.pack link)
+    linkedCssLucid (T.pack $ show link)
 
 -- Inline
 
@@ -397,13 +397,13 @@ instance ( MonadUrl Abs t (AbsoluteUrlT HI.MarkupM)
          ) => Deploy Css Remote (Path Abs t) (AbsoluteUrlT HI.MarkupM) where
   deploy Css Remote i = do
     link <- pathUrl i
-    lift (linkedCssBlaze (T.pack link))
+    lift (linkedCssBlaze (T.pack $ show link))
 
 instance ( MonadUrl Abs t (AbsoluteUrlT HI.MarkupM)
          ) => Deploy Css Remote (Location Abs t) (AbsoluteUrlT HI.MarkupM) where
   deploy Css Remote i = do
     link <- locUrl i
-    lift (linkedCssBlaze (T.pack link))
+    lift (linkedCssBlaze (T.pack $ show link))
 
 
 -- Local
@@ -415,25 +415,25 @@ instance ( MonadUrl Abs t (GroundedUrlT HI.MarkupM)
          ) => Deploy Css Locally (Path Abs t) (GroundedUrlT HI.MarkupM) where
   deploy Css Locally i = do
     link <- pathUrl i
-    lift (linkedCssBlaze (T.pack link))
+    lift (linkedCssBlaze (T.pack $ show link))
 
 instance ( MonadUrl Rel t (RelativeUrlT HI.MarkupM)
          ) => Deploy Css Locally (Path Rel t) (RelativeUrlT HI.MarkupM) where
   deploy Css Locally i = do
     link <- pathUrl i
-    lift (linkedCssBlaze (T.pack link))
+    lift (linkedCssBlaze (T.pack $ show link))
 
 instance ( MonadUrl Abs t (GroundedUrlT HI.MarkupM)
          ) => Deploy Css Locally (Location Abs t) (GroundedUrlT HI.MarkupM) where
   deploy Css Locally i = do
     link <- locUrl i
-    lift (linkedCssBlaze (T.pack link))
+    lift (linkedCssBlaze (T.pack $ show link))
 
 instance ( MonadUrl Rel t (RelativeUrlT HI.MarkupM)
          ) => Deploy Css Locally (Location Rel t) (RelativeUrlT HI.MarkupM) where
   deploy Css Locally i = do
     link <- locUrl i
-    lift (linkedCssBlaze (T.pack link))
+    lift (linkedCssBlaze (T.pack $ show link))
 
 -- Inline
 
@@ -469,14 +469,14 @@ instance ( Monad m
          ) => Deploy WebComponent Remote (Path Abs t) (L.HtmlT (AbsoluteUrlT m)) where
   deploy WebComponent Remote i = do
     link <- lift (pathUrl i)
-    linkedWebComponentLucid (T.pack link)
+    linkedWebComponentLucid (T.pack $ show link)
 
 instance ( Monad m
          , MonadUrl Abs t (AbsoluteUrlT m)
          ) => Deploy WebComponent Remote (Location Abs t) (L.HtmlT (AbsoluteUrlT m)) where
   deploy WebComponent Remote i = do
     link <- lift (locUrl i)
-    linkedWebComponentLucid (T.pack link)
+    linkedWebComponentLucid (T.pack $ show link)
 
 -- instance ( Monad m
 --          , MonadUrl Abs t (AbsoluteUrlT m)
@@ -486,7 +486,7 @@ instance ( Monad m
 --   deploy WebComponent Remote i = do
 --     i' <- lift (toLocation i)
 --     link <- lift (locUrl i')
---     linkedWebComponentLucid (T.pack link)
+--     linkedWebComponentLucid (T.pack $ show link)
 
 
 -- Local
@@ -500,28 +500,28 @@ instance ( Monad m
          ) => Deploy WebComponent Locally (Path Abs t) (L.HtmlT (GroundedUrlT m)) where
   deploy WebComponent Locally i = do
     link <- lift (pathUrl i)
-    linkedWebComponentLucid (T.pack link)
+    linkedWebComponentLucid (T.pack $ show link)
 
 instance ( Monad m
          , MonadUrl Rel t (RelativeUrlT m)
          ) => Deploy WebComponent Locally (Path Rel t) (L.HtmlT (RelativeUrlT m)) where
   deploy WebComponent Locally i = do
     link <- lift (pathUrl i)
-    linkedWebComponentLucid (T.pack link)
+    linkedWebComponentLucid (T.pack $ show link)
 
 instance ( Monad m
          , MonadUrl Abs t (GroundedUrlT m)
          ) => Deploy WebComponent Locally (Location Abs t) (L.HtmlT (GroundedUrlT m)) where
   deploy WebComponent Locally i = do
     link <- lift (locUrl i)
-    linkedWebComponentLucid (T.pack link)
+    linkedWebComponentLucid (T.pack $ show link)
 
 instance ( Monad m
          , MonadUrl Rel t (RelativeUrlT m)
          ) => Deploy WebComponent Locally (Location Rel t) (L.HtmlT (RelativeUrlT m)) where
   deploy WebComponent Locally i = do
     link <- lift (locUrl i)
-    linkedWebComponentLucid (T.pack link)
+    linkedWebComponentLucid (T.pack $ show link)
 
 -- instance ( Monad m
 --          , MonadUrl Abs t (GroundedUrlT m)
@@ -531,7 +531,7 @@ instance ( Monad m
 --   deploy WebComponent Locally i = do
 --     i' <- lift (toLocation i)
 --     link <- lift (locUrl i')
---     linkedWebComponentLucid (T.pack link)
+--     linkedWebComponentLucid (T.pack $ show link)
 --
 -- instance ( Monad m
 --          , MonadUrl Rel t (RelativeUrlT m)
@@ -541,7 +541,7 @@ instance ( Monad m
 --   deploy WebComponent Locally i = do
 --     i' <- lift (toLocation i)
 --     link <- lift (locUrl i')
---     linkedWebComponentLucid (T.pack link)
+--     linkedWebComponentLucid (T.pack $ show link)
 
 -- Blaze
 
@@ -559,13 +559,13 @@ instance ( MonadUrl Abs t (AbsoluteUrlT HI.MarkupM)
          ) => Deploy WebComponent Remote (Path Abs t) (AbsoluteUrlT HI.MarkupM) where
   deploy WebComponent Remote i = do
     link <- pathUrl i
-    lift (linkedWebComponentBlaze (T.pack link))
+    lift (linkedWebComponentBlaze (T.pack $ show link))
 
 instance ( MonadUrl Abs t (AbsoluteUrlT HI.MarkupM)
          ) => Deploy WebComponent Remote (Location Abs t) (AbsoluteUrlT HI.MarkupM) where
   deploy WebComponent Remote i = do
     link <- locUrl i
-    lift (linkedWebComponentBlaze (T.pack link))
+    lift (linkedWebComponentBlaze (T.pack $ show link))
 
 
 -- Local
@@ -577,23 +577,23 @@ instance ( MonadUrl Abs t (GroundedUrlT HI.MarkupM)
          ) => Deploy WebComponent Locally (Path Abs t) (GroundedUrlT HI.MarkupM) where
   deploy WebComponent Locally i = do
     link <- pathUrl i
-    lift (linkedWebComponentBlaze (T.pack link))
+    lift (linkedWebComponentBlaze (T.pack $ show link))
 
 instance ( MonadUrl Rel t (RelativeUrlT HI.MarkupM)
          ) => Deploy WebComponent Locally (Path Rel t) (RelativeUrlT HI.MarkupM) where
   deploy WebComponent Locally i = do
     link <- pathUrl i
-    lift (linkedWebComponentBlaze (T.pack link))
+    lift (linkedWebComponentBlaze (T.pack $ show link))
 
 instance ( MonadUrl Abs t (GroundedUrlT HI.MarkupM)
          ) => Deploy WebComponent Locally (Location Abs t) (GroundedUrlT HI.MarkupM) where
   deploy WebComponent Locally i = do
     link <- locUrl i
-    lift (linkedWebComponentBlaze (T.pack link))
+    lift (linkedWebComponentBlaze (T.pack $ show link))
 
 instance ( MonadUrl Rel t (RelativeUrlT HI.MarkupM)
          ) => Deploy WebComponent Locally (Location Rel t) (RelativeUrlT HI.MarkupM) where
   deploy WebComponent Locally i = do
     link <- locUrl i
-    lift (linkedWebComponentBlaze (T.pack link))
+    lift (linkedWebComponentBlaze (T.pack $ show link))
 
