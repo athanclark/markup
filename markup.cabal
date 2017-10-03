@@ -1,5 +1,5 @@
 Name:                   markup
-Version:                4.0.2
+Version:                4.0.3
 Author:                 Athan Clark <athan.clark@gmail.com>
 Maintainer:             Athan Clark <athan.clark@gmail.com>
 License:                MIT
@@ -49,7 +49,7 @@ Library
                       , resourcet
                       , text
                       , transformers-base
-                      , urlpath >= 6.0.4
+                      , urlpath >= 7.0.0
 
 Source-Repository head
   Type:                 git
