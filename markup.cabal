@@ -1,5 +1,5 @@
 Name:                   markup
-Version:                4.0.3
+Version:                4.0.4
 Author:                 Athan Clark <athan.clark@gmail.com>
 Maintainer:             Athan Clark <athan.clark@gmail.com>
 License:                MIT
@@ -36,6 +36,7 @@ Library
                         Data.Markup.Class
                         Data.Markup.Library
   Build-Depends:        base >= 4.8 && < 5
+                      , attoparsec-uri >= 0.0.4
                       , blaze-html
                       , blaze-markup
                       , comonad
@@ -45,11 +46,11 @@ Library
                       , monad-control
                       , monad-logger
                       , mtl
-                      , path-extra >= 0.0.5
+                      , path-extra >= 0.0.6
                       , resourcet
                       , text
                       , transformers-base
-                      , urlpath >= 7.0.0
+                      , urlpath >= 7.1.0
 
 Source-Repository head
   Type:                 git
