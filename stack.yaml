@@ -9,8 +9,8 @@ packages:
 
 # Packages to be pulled from upstream that are not in the resolver (e.g., acme-missiles-0.3)
 extra-deps:
-- path-extra-0.1.2
-- urlpath-8.2.0
+- path-extra-0.2.0
+- urlpath-9.0.0
 
 # Override default flag values for local packages and extra-deps
 flags: {}

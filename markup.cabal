@@ -2,10 +2,10 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 45b0f98e3a9331ec8258b012b71e0b2cbf744c7de6dca7b6af520a07502f401e
+-- hash: 6e041222dfae35b2ec610fe5eab3cd1df2c4c0aa143bf7cc78a2431a62b87275
 
 name:           markup
-version:        4.1.0
+version:        4.2.0
 synopsis:       Abstraction for HTML-embedded content
 description:    Please see the README on Github at <https://github.com/githubuser/markup#readme>
 category:       Data, Web
@@ -50,9 +50,9 @@ library
     , monad-logger
     , mtl
     , path
-    , path-extra >=0.1.2
+    , path-extra >=0.2.0
     , resourcet
     , text
     , transformers-base
-    , urlpath >=8.2.0
+    , urlpath >=9.0.0
   default-language: Haskell2010
