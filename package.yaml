@@ -1,0 +1,39 @@
+name:                markup
+version:             4.1.0
+github:              "athanclark/markup"
+license:             BSD3
+author:              "Athan Clark"
+maintainer:          "athan.clark@localcooking.com"
+copyright:           "Copyright (c) 2018 Athan Clark"
+
+extra-source-files:
+- README.md
+
+synopsis:            Abstraction for HTML-embedded content
+category:            Data, Web
+description:         Please see the README on Github at <https://github.com/githubuser/markup#readme>
+
+ghc-options:
+  - -Wall
+
+dependencies:
+- base >= 4.8 && < 5
+- attoparsec-uri >= 0.0.4
+- blaze-html
+- blaze-markup
+- comonad
+- clay
+- lucid >= 2.5
+- mmorph
+- monad-control
+- monad-logger
+- mtl
+- path
+- path-extra >= 0.1.2
+- resourcet
+- text
+- transformers-base
+- urlpath >= 8.2.0
+
+library:
+  source-dirs: src

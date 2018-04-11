@@ -1,57 +1,58 @@
-Name:                   markup
-Version:                4.0.4
-Author:                 Athan Clark <athan.clark@gmail.com>
-Maintainer:             Athan Clark <athan.clark@gmail.com>
-License:                MIT
-License-File:           LICENSE
-Category:               Data, Web
-Synopsis:               Abstraction for HTML-embedded content
-Description:
-  This library tries to simplify deployment of common HTML constructs, for different
-  HTML engines.
-  .
-  Deployment, from this library's perspective, means /how/ something can be
-  rendered to markup, yet still achieve the same "result" to the end user (namely
-  the DOM). For instance, we could use a @<link>@ tag to reference external Css,
-  or we might insert the Css code /inline/ a @<style>@ tag.
-  .
-  We use simple tags to infer the deployment mechanism for a context of
-  markup. The three deployment mechanisms provided include
-  .
-    * /inline/ - the asset inserted between markup tags
-  .
-    * /local/ - assets on the current server
-  .
-    * /remote/ - assets referenced with a complete URI
+-- This file has been generated from package.yaml by hpack version 0.21.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 45b0f98e3a9331ec8258b012b71e0b2cbf744c7de6dca7b6af520a07502f401e
 
-Cabal-Version:          >= 1.10
-Build-Type:             Simple
+name:           markup
+version:        4.1.0
+synopsis:       Abstraction for HTML-embedded content
+description:    Please see the README on Github at <https://github.com/githubuser/markup#readme>
+category:       Data, Web
+homepage:       https://github.com/athanclark/markup#readme
+bug-reports:    https://github.com/athanclark/markup/issues
+author:         Athan Clark
+maintainer:     athan.clark@localcooking.com
+copyright:      Copyright (c) 2018 Athan Clark
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
 
-Library
-  Default-Language:     Haskell2010
-  HS-Source-Dirs:       src
-  GHC-Options:          -Wall
-  Exposed-Modules:      Data.Markup
-                        Data.Markup.Types
-                        Data.Markup.Class
-                        Data.Markup.Library
-  Build-Depends:        base >= 4.8 && < 5
-                      , attoparsec-uri >= 0.0.4
-                      , blaze-html
-                      , blaze-markup
-                      , comonad
-                      , clay
-                      , lucid >= 2.5
-                      , mmorph
-                      , monad-control
-                      , monad-logger
-                      , mtl
-                      , path-extra >= 0.0.6
-                      , resourcet
-                      , text
-                      , transformers-base
-                      , urlpath >= 7.1.0
+extra-source-files:
+    README.md
 
-Source-Repository head
-  Type:                 git
-  Location:             https://github.com/athanclark/markup.git
+source-repository head
+  type: git
+  location: https://github.com/athanclark/markup
+
+library
+  exposed-modules:
+      Data.Markup
+      Data.Markup.Class
+      Data.Markup.Library
+      Data.Markup.Types
+  other-modules:
+      Paths_markup
+  hs-source-dirs:
+      src
+  ghc-options: -Wall
+  build-depends:
+      attoparsec-uri >=0.0.4
+    , base >=4.8 && <5
+    , blaze-html
+    , blaze-markup
+    , clay
+    , comonad
+    , lucid >=2.5
+    , mmorph
+    , monad-control
+    , monad-logger
+    , mtl
+    , path
+    , path-extra >=0.1.2
+    , resourcet
+    , text
+    , transformers-base
+    , urlpath >=8.2.0
+  default-language: Haskell2010

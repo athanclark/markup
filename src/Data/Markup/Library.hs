@@ -21,12 +21,13 @@
 
 module Data.Markup.Library where
 
-import           Data.Markup.Class
-import           Data.Markup.Types
+import           Data.Markup.Class (Deploy (deploy))
+import           Data.Markup.Types (Inline (..), Remote (..), Locally (..))
 
-import           Data.Url
+import           Data.Url (MonadUrl (locUrl, pathUrl), RelativeUrlT, GroundedUrlT, AbsoluteUrlT)
 import           Data.URI (printURI)
-import           Path.Extended
+import           Path (Path, Abs, Rel)
+import           Path.Extended (Location)
 
 import qualified Lucid                       as L
 import qualified Text.Blaze.Html5            as H
@@ -36,7 +37,7 @@ import qualified Clay                        as C
 
 import qualified Data.Text                   as T
 import qualified Data.Text.Lazy              as LT
-import           Control.Monad.Trans
+import           Control.Monad.Trans (MonadTrans (lift))
 
 
 data Image        = Image        deriving (Show, Eq)
