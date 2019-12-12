@@ -7,7 +7,7 @@
 name:           markup
 version:        4.2.0
 synopsis:       Abstraction for HTML-embedded content
-description:    Please see the README on Github at <https://github.com/githubuser/markup#readme>
+description:    Please see the README on Github at <https://github.com/athanclark/markup#readme>
 category:       Data, Web
 homepage:       https://github.com/athanclark/markup#readme
 bug-reports:    https://github.com/athanclark/markup/issues
