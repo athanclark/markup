@@ -1,8 +1,10 @@
--- This file has been generated from package.yaml by hpack version 0.21.2.
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 6e041222dfae35b2ec610fe5eab3cd1df2c4c0aa143bf7cc78a2431a62b87275
+-- hash: 1f099f7bb1a9ddd8dd974f3e0b555321a321c95a6bd89ea79f6fd2751fe76a78
 
 name:           markup
 version:        4.2.0
@@ -12,13 +14,11 @@ category:       Data, Web
 homepage:       https://github.com/athanclark/markup#readme
 bug-reports:    https://github.com/athanclark/markup/issues
 author:         Athan Clark
-maintainer:     athan.clark@localcooking.com
+maintainer:     athan.clark@github.com
 copyright:      Copyright (c) 2018 Athan Clark
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
-cabal-version:  >= 1.10
-
 extra-source-files:
     README.md
 

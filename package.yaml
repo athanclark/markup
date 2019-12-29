@@ -3,7 +3,7 @@ version:             4.2.0
 github:              "athanclark/markup"
 license:             BSD3
 author:              "Athan Clark"
-maintainer:          "athan.clark@localcooking.com"
+maintainer:          "athan.clark@github.com"
 copyright:           "Copyright (c) 2018 Athan Clark"
 
 extra-source-files:
@@ -11,7 +11,7 @@ extra-source-files:
 
 synopsis:            Abstraction for HTML-embedded content
 category:            Data, Web
-description:         Please see the README on Github at <https://github.com/githubuser/markup#readme>
+description:         Please see the README on Github at <https://github.com/athanclark/markup#readme>
 
 ghc-options:
   - -Wall
